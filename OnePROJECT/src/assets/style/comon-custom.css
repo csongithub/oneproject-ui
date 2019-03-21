@@ -1,0 +1,25 @@
+
+.b-modal {
+    font-size: 50%px;
+  }
+  
+  .b-button {
+    max-height: 27px;
+    min-width: 60px;
+    font-size: 75%;
+  }
+  
+  .b-form-input {
+    max-height: 27px;
+    font-size: 75%;
+  }
+  
+  .b-form-select{
+    max-height: 30px;
+    font-size: 75%;
+  }
+  
+  .mx-input {
+    max-height: 27px;
+    font-size: 85%;
+  }
