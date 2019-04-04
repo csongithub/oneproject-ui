@@ -83,6 +83,12 @@ export default {
               path: '/individualbasic'
             },
             {
+              title: 'Communication',
+              icon: 'fa fa-address-book',
+              name: 'IndividualCommunication',
+              path: '/individualcommunication'
+            },
+            {
               title: 'KYC',
               icon: 'fa fa-id-card',
               name: 'IndividualKYC',
@@ -153,7 +159,6 @@ export default {
   margin-top:30px;
   background-color:honeydew;
   min-height: 83vh;
-  max-height: 83vh;
   box-shadow: 0px 10px 35px rgba(0, 87, 125, 0.16);
 }
 

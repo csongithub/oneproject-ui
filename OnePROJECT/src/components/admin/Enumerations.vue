@@ -18,7 +18,7 @@
     <b-row class="ml-5 mt-5">
       <b-col>
         <table border="1">
-          <thead><th>Gender Type <i :class="'fa fa-plus operation ml-2'" style="float:right" v-on:click="showAddModal(enumerationTypes.gender)"/></th></thead>
+          <thead><th>Gender Type <i :class="'fa fa-plus operation ml-2'" style="float:right; cursor:pointer;" v-on:click="showAddModal(enumerationTypes.gender)"/></th></thead>
           <tbody>
             <tr v-for="(gender, index) of genderTypes" :key="gender.name"><td>{{gender.name + ' '}}<i @click="deleteOption(enumerationTypes.gender, index)" :class="deleteIcon + ' float-right'" style="cursor:pointer; color:black;"/></td></tr>
           </tbody>
@@ -147,41 +147,42 @@ export default {
       })
     },
     deleteOption (preferencesType, index) {
-      let handleConfirm = function (thisScope) {
-        thisScope.enumPreferences.preferencesType = preferencesType
-        thisScope.enumPreferences.value = null
-        if (thisScope.enumPreferences.preferencesType === thisScope.enumerationTypes.gender) {
-          thisScope.genderTypes.splice(index, 1)
-          thisScope.enumPreferences.value = JSON.stringify(thisScope.genderTypes)
-        } else if (thisScope.enumPreferences.preferencesType === thisScope.enumerationTypes.projectType) {
-          thisScope.projectTypes.splice(index, 1)
-          thisScope.enumPreferences.value = JSON.stringify(thisScope.projectTypes)
-        } else if (thisScope.enumPreferences.preferencesType === thisScope.enumerationTypes.position) {
-          thisScope.positionTypes.splice(index, 1)
-          thisScope.enumPreferences.value = JSON.stringify(thisScope.positionTypes)
-        } else if (thisScope.enumPreferences.preferencesType === thisScope.enumerationTypes.kycDocument) {
-          thisScope.kycDocuments.splice(index, 1)
-          thisScope.enumPreferences.value = JSON.stringify(thisScope.kycDocuments)
-        } else if (thisScope.enumPreferences.preferencesType === thisScope.enumerationTypes.material) {
-          thisScope.materialTypes.splice(index, 1)
-          thisScope.enumPreferences.value = JSON.stringify(thisScope.materialTypes)
+      let handleConfirm = function () {
+        this.enumPreferences.preferencesType = preferencesType
+        this.enumPreferences.value = null
+        if (this.enumPreferences.preferencesType === this.enumerationTypes.gender) {
+          this.genderTypes.splice(index, 1)
+          this.enumPreferences.value = JSON.stringify(this.genderTypes)
+        } else if (this.enumPreferences.preferencesType === this.enumerationTypes.projectType) {
+          this.projectTypes.splice(index, 1)
+          this.enumPreferences.value = JSON.stringify(this.projectTypes)
+        } else if (this.enumPreferences.preferencesType === this.enumerationTypes.position) {
+          this.positionTypes.splice(index, 1)
+          this.enumPreferences.value = JSON.stringify(this.positionTypes)
+        } else if (this.enumPreferences.preferencesType === this.enumerationTypes.kycDocument) {
+          this.kycDocuments.splice(index, 1)
+          this.enumPreferences.value = JSON.stringify(this.kycDocuments)
+        } else if (this.enumPreferences.preferencesType === this.enumerationTypes.material) {
+          this.materialTypes.splice(index, 1)
+          this.enumPreferences.value = JSON.stringify(this.materialTypes)
         }
-        axios.put(thisScope.baseAPI + 'addOrUpdatePreferences', thisScope.enumPreferences).then(response => {
+        let self = this
+        axios.put(this.baseAPI + 'addOrUpdatePreferences', this.enumPreferences).then(response => {
           let o = response.data
-          thisScope.genderTypes = JSON.parse(o.genderJson) !== null ? JSON.parse(o.genderJson) : []
-          thisScope.positionTypes = JSON.parse(o.positionJson) !== null ? JSON.parse(o.positionJson) : []
-          thisScope.projectTypes = JSON.parse(o.projectTypeJson) !== null ? JSON.parse(o.projectTypeJson) : []
-          thisScope.kycDocuments = JSON.parse(o.kycSupportedDocsJson) !== null ? JSON.parse(o.kycSupportedDocsJson) : []
-          thisScope.materialTypes = JSON.parse(o.materialTypeJson) !== null ? JSON.parse(o.materialTypeJson) : []
-          thisScope.$awn.success('Added Successfully')
-          thisScope.hideModal()
+          self.genderTypes = JSON.parse(o.genderJson) !== null ? JSON.parse(o.genderJson) : []
+          self.positionTypes = JSON.parse(o.positionJson) !== null ? JSON.parse(o.positionJson) : []
+          self.projectTypes = JSON.parse(o.projectTypeJson) !== null ? JSON.parse(o.projectTypeJson) : []
+          self.kycDocuments = JSON.parse(o.kycSupportedDocsJson) !== null ? JSON.parse(o.kycSupportedDocsJson) : []
+          self.materialTypes = JSON.parse(o.materialTypeJson) !== null ? JSON.parse(o.materialTypeJson) : []
+          self.$awn.success('Added Successfully')
+          self.hideModal()
         }).catch(error => {
-          thisScope.$awn.alert(error.response.data.message)
+          this.$awn.alert(error.response.data.message)
         })
-      }
+      }.bind(this)
       let handleCancel = function () {
       }
-      this.$awn.confirm('You are tyrying to delete ' + preferencesType + ', Are you sure?', handleConfirm(this), handleCancel)
+      this.$awn.confirm('You are tyrying to delete ' + preferencesType + ', Are you sure?', handleConfirm, handleCancel)
     },
     getPreferences () {
       let thisScope = this

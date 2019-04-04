@@ -3,6 +3,7 @@
     <div id="app">
       <section class="app-main">
         <nav-bar/>
+        <footer/>
       </section>
     </div>
   </main>
@@ -10,10 +11,12 @@
 
 <script>
 import NavBar from './components/nav/NavBar.vue'
+import Footer from './components/nav/Footer'
 export default {
   name: 'App',
   components: {
-    'nav-bar': NavBar
+    'nav-bar': NavBar,
+    'footer': Footer
   },
   data () {
     return {

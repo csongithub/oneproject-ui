@@ -10,6 +10,7 @@ import ProjectTools from '../components/project/ProjectTools'
 
 import IndividualBasic from '../components/individual/IndividualBasic'
 import IndividualKYC from '../components/individual/IndividualKYC'
+import IndividualCommunication from '../components/individual/IndividualCommunication'
 
 import Billing from '../components/billing/Billing'
 
@@ -48,6 +49,11 @@ export default new Router({
       path: '/individualbasic',
       name: 'IndividualBasic',
       component: IndividualBasic
+    },
+    {
+      path: '/individualcommunication',
+      name: 'IndividualCommunication',
+      component: IndividualCommunication
     },
     {
       path: '/individualkyc',

@@ -14,6 +14,14 @@
                                       :bordered="true"
                                       :current-page="currentPage"
                                       :per-page="perPage">
+      <template v-if="expandable" slot="expand" slot-scope="row">
+        <b-button size="sm" @click="row.toggleDetails" class="mr-2">
+          {{ row.detailsShowing ? 'Hide' : 'Show'}} Address
+        </b-button>
+      </template>
+      <template slot="row-details" slot-scope="row" v-if="expandAddress">
+        <adr :individual="row.item" :entity="'IND'"></adr>
+      </template>
       <template slot="table-caption">Total Records: {{data.length}}</template>
       <template v-if="actionableColumn" slot="actions" slot-scope="row">
         <i :class="'fa fa-pencil'" class="ml-1" style="cursor: pointer; color: green" size="sm" @click="onEditClicked(row.item)"/>
@@ -23,9 +31,21 @@
   </div>
 </template>
 <script>
+import Address from '../common/Address'
 export default {
   name: 'Individuals',
+  components: {
+    'adr': Address
+  },
   props: {
+    expandable: {
+      type: Boolean,
+      default: false
+    },
+    expandAddress: {
+      type: Boolean,
+      default: false
+    },
     actionable: {
       type: Boolean,
       default: true
@@ -75,7 +95,8 @@ export default {
       actions: {
         key: 'actions',
         label: 'Actions'
-      }
+      },
+      address: {}
     }
   },
   methods: {
@@ -90,6 +111,11 @@ export default {
     },
     onDeleteClicked (item) {
       this.$emit('delete', item)
+    },
+    processExpandRequest (row) {
+      row.item.expanded = !row.item.expanded
+      // let o = row.toggleDetails
+      // console.log(o)
     }
   },
   mounted () {
