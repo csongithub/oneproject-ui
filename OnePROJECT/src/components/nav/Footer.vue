@@ -1,20 +1,27 @@
 <template>
-    <div>
-        {{footertext}}
+    <div id = "main">
+      <label style="margin-left:45%">{{footerText}}</label>
     </div>
 </template>
 
 <script>
 export default {
-  name: 'App',
+  name: 'Footer',
   data () {
     return {
-      footertext: 'Copyright@OnePROJECT'
+      footerText: 'copyright@OnePROJECT'
     }
   },
   methods: {
+  },
+  mounted () {
+  },
+  watch: {
   }
 }
 </script>
 <style scoped>
+#main{
+  background-color:aliceblue;
+}
 </style>

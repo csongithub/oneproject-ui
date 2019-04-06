@@ -3,9 +3,9 @@
     <div id="app">
       <section class="app-main">
         <nav-bar/>
-        <footer/>
       </section>
     </div>
+    <footer-comp/>
   </main>
 </template>
 
@@ -16,7 +16,7 @@ export default {
   name: 'App',
   components: {
     'nav-bar': NavBar,
-    'footer': Footer
+    'footer-comp': Footer
   },
   data () {
     return {
@@ -35,8 +35,6 @@ export default {
 
 .main-canvas {
   min-height: 100vh;
-  max-height: calc(100vh - 90px);
-  margin: 0 auto;
   background-color:rgba(0, 87, 125, 0.16);
 }
 </style>
