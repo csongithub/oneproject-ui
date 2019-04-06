@@ -1,15 +1,15 @@
 <template>
-  <div class="billing">
+  <div class="individualbilling">
     <h5>{{ msg }}</h5>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'Billing',
+  name: 'IndividualBilling',
   data () {
     return {
-      msg: 'Bills &  Paymaents Management'
+      msg: 'Individual Bills &  Paymaents'
     }
   }
 }

@@ -69,7 +69,7 @@ export default {
           sortable: true
         },
         status: {
-          label: 'KYC Status',
+          label: 'Status',
           sortable: true
         },
         confirmationDate: {

@@ -12,7 +12,8 @@ import IndividualBasic from '../components/individual/IndividualBasic'
 import IndividualKYC from '../components/individual/IndividualKYC'
 import IndividualCommunication from '../components/individual/IndividualCommunication'
 
-import Billing from '../components/billing/Billing'
+import IndividualBilling from '../components/billing/IndividualBilling'
+import SupplierBilling from '../components/billing/SupplierBilling'
 
 import Tooling from '../components/tooling/Tooling'
 
@@ -61,9 +62,14 @@ export default new Router({
       component: IndividualKYC
     },
     {
-      path: '/billing',
-      name: 'Billing',
-      component: Billing
+      path: '/individualbilling',
+      name: 'IndividualBilling',
+      component: IndividualBilling
+    },
+    {
+      path: '/supplierbilling',
+      name: 'SupplierBilling',
+      component: SupplierBilling
     },
     {
       path: '/tooling',

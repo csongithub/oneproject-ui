@@ -160,11 +160,28 @@ export default {
       })
     },
     getAllIndividuals () {
-      let thisScope = this
+      let self = this
       axios.get(this.baseIndividualAPI + 'getAllIndividuals').then(response => {
-        thisScope.allIndividuals = response.data
+        if (this.projectIndividuals.length === 0) {
+          self.allIndividuals = response.data
+        } else {
+          self.allIndividuals.splice(0, self.allIndividuals.length)
+          var found = false
+          for (var i = 0; i < response.data.length; i++) {
+            found = false
+            for (var j = 0; j < self.projectIndividuals.length; j++) {
+              if (response.data[i].individualId === self.projectIndividuals[j].individualId) {
+                found = true
+                break
+              }
+            }
+            if (!found) {
+              self.allIndividuals.push(response.data[i])
+            }
+          }
+        }
       }).catch(error => {
-        thisScope.$awn.alert(error.response.data.message)
+        self.$awn.alert(error.response.data.message)
       })
     },
     addIndividualToProject () {

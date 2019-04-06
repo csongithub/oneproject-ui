@@ -89,7 +89,7 @@ export default {
               path: '/individualcommunication'
             },
             {
-              title: 'KYC',
+              title: 'Due Diligence',
               icon: 'fa fa-id-card',
               name: 'IndividualKYC',
               path: '/individualkyc'
@@ -102,10 +102,16 @@ export default {
           icon: 'fa fa-credit-card',
           subMenu: [
             {
-              title: 'Billing',
-              icon: 'bars',
-              name: 'Billing',
-              path: '/tooling'
+              title: 'Individual',
+              icon: 'fa fa-male',
+              name: 'IndividualBilling',
+              path: '/individualbilling'
+            },
+            {
+              title: 'Supplier',
+              icon: 'fa fa-users',
+              name: 'SupplierBilling',
+              path: '/supplierbilling'
             }
           ]
         },

@@ -1,0 +1,21 @@
+<template>
+  <div class="supplierbilling">
+    <h5>{{ msg }}</h5>
+  </div>
+</template>
+
+<script>
+export default {
+  name: 'SupplierBilling',
+  data () {
+    return {
+      msg: 'Supplier Bills &  Paymaents'
+    }
+  }
+}
+</script>
+
+<!-- Add "scoped" attribute to limit CSS to this component only -->
+<style scoped>
+
+</style>
