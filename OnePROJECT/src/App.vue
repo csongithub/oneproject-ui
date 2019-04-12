@@ -5,18 +5,19 @@
         <nav-bar/>
       </section>
     </div>
-    <footer-comp/>
+    <footer class="d-flex flex-col justify-content-center mt-15">
+      <!-- <img id="appFooter" srcset="../src/assets/logo.png 5x" alt="OnePROJECT" /><br> -->
+      <small  class="mt-2" id="appSubFooter">COPYRIGHT &copy; 2019 OnePROJECT, INC. ALL RIGHTS RESERVED.</small>
+    </footer>
   </main>
 </template>
 
 <script>
 import NavBar from './components/nav/NavBar.vue'
-import Footer from './components/nav/Footer'
 export default {
   name: 'App',
   components: {
-    'nav-bar': NavBar,
-    'footer-comp': Footer
+    'nav-bar': NavBar
   },
   data () {
     return {

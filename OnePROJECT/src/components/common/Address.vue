@@ -4,7 +4,9 @@
       <b-card v-if="address">
         <b-row>
           <b-col>
+            <b-form-group>
               <label><b>House Number:</b> {{address.houseNumber}}</label>
+            </b-form-group>
           </b-col>
           <b-col>
             <b-form-group>
@@ -117,10 +119,6 @@ export default {
     individual: {
       type: Object,
       default: null
-    },
-    entity: {
-      type: String,
-      default: 'IND'
     }
   },
   data () {
@@ -140,9 +138,7 @@ export default {
     }
   },
   mounted () {
-    if (this.entity === 'IND') {
-      this.getIndividualAddress()
-    }
+    this.getIndividualAddress()
   }
 }
 </script>

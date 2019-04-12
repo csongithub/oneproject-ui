@@ -56,6 +56,14 @@
           </tbody>
         </table>
       </b-col>
+      <b-col>
+        <table border="1">
+          <thead><th>Salary Interval <i :class="'fa fa-plus operation ml-2'" style="float:right" v-on:click="showAddModal(enumerationTypes.salaryInterval)"/></th></thead>
+          <tbody>
+            <tr v-for="(interval, index) of salaryIntervals" :key="interval.name"><td>{{interval.name + ' '}}<i @click="deleteOption(enumerationTypes.salaryInterval, index)" :class="deleteIcon + ' float-right'" style="cursor:pointer; color:black;"/></td></tr>
+          </tbody>
+        </table>
+      </b-col>
     </b-row>
   </div>
 </template>
@@ -80,13 +88,15 @@ export default {
         projectType: 'PROJECT_TYPE',
         position: 'POSITION',
         kycDocument: 'KYC_DOCS',
-        material: 'MATERIAL_TYPE'
+        material: 'MATERIAL_TYPE',
+        salaryInterval: 'SAL_INTERVAL'
       },
       genderTypes: [],
       projectTypes: [],
       positionTypes: [],
       kycDocuments: [],
-      materialTypes: []
+      materialTypes: [],
+      salaryIntervals: []
     }
   },
   methods: {
@@ -106,6 +116,9 @@ export default {
       } else if (obj === this.enumerationTypes.material) {
         this.title = 'Define new material'
         this.enumPreferences.preferencesType = this.enumerationTypes.material
+      } else if (obj === this.enumerationTypes.salaryInterval) {
+        this.title = 'Define new Interval'
+        this.enumPreferences.preferencesType = this.enumerationTypes.salaryInterval
       }
       this.$refs.createEnumModal.show()
     },
@@ -131,6 +144,9 @@ export default {
       } else if (this.enumPreferences.preferencesType === this.enumerationTypes.material) {
         this.materialTypes.push({ 'name': this.value })
         this.enumPreferences.value = JSON.stringify(this.materialTypes)
+      } else if (this.enumPreferences.preferencesType === this.enumerationTypes.salaryInterval) {
+        this.salaryIntervals.push({ 'name': this.value })
+        this.enumPreferences.value = JSON.stringify(this.salaryIntervals)
       }
       let thisScope = this
       axios.put(this.baseAPI + 'addOrUpdatePreferences', this.enumPreferences).then(response => {
@@ -140,6 +156,7 @@ export default {
         thisScope.projectTypes = JSON.parse(o.projectTypeJson) !== null ? JSON.parse(o.projectTypeJson) : []
         thisScope.kycDocuments = JSON.parse(o.kycSupportedDocsJson) !== null ? JSON.parse(o.kycSupportedDocsJson) : []
         thisScope.materialTypes = JSON.parse(o.materialTypeJson) !== null ? JSON.parse(o.materialTypeJson) : []
+        thisScope.salaryIntervals = JSON.parse(o.salaryIntervalJson) !== null ? JSON.parse(o.salaryIntervalJson) : []
         thisScope.$awn.success('Added Successfully')
         thisScope.hideModal()
       }).catch(error => {
@@ -165,6 +182,9 @@ export default {
         } else if (this.enumPreferences.preferencesType === this.enumerationTypes.material) {
           this.materialTypes.splice(index, 1)
           this.enumPreferences.value = JSON.stringify(this.materialTypes)
+        } else if (this.enumPreferences.preferencesType === this.enumerationTypes.salaryInterval) {
+          this.salaryIntervals.splice(index, 1)
+          this.enumPreferences.value = JSON.stringify(this.salaryIntervals)
         }
         let self = this
         axios.put(this.baseAPI + 'addOrUpdatePreferences', this.enumPreferences).then(response => {
@@ -174,6 +194,7 @@ export default {
           self.projectTypes = JSON.parse(o.projectTypeJson) !== null ? JSON.parse(o.projectTypeJson) : []
           self.kycDocuments = JSON.parse(o.kycSupportedDocsJson) !== null ? JSON.parse(o.kycSupportedDocsJson) : []
           self.materialTypes = JSON.parse(o.materialTypeJson) !== null ? JSON.parse(o.materialTypeJson) : []
+          self.salaryIntervals = JSON.parse(o.salaryIntervalJson) !== null ? JSON.parse(o.salaryIntervalJson) : []
           self.$awn.success('Added Successfully')
           self.hideModal()
         }).catch(error => {
@@ -193,6 +214,7 @@ export default {
         thisScope.projectTypes = JSON.parse(o.projectTypeJson) !== null ? JSON.parse(o.projectTypeJson) : []
         thisScope.kycDocuments = JSON.parse(o.kycSupportedDocsJson) !== null ? JSON.parse(o.kycSupportedDocsJson) : []
         thisScope.materialTypes = JSON.parse(o.materialTypeJson) !== null ? JSON.parse(o.materialTypeJson) : []
+        thisScope.salaryIntervals = JSON.parse(o.salaryIntervalJson) !== null ? JSON.parse(o.salaryIntervalJson) : []
       }).catch(error => {
         thisScope.$awn.alert(error.response.data.message)
       })

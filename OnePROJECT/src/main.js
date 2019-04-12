@@ -43,6 +43,5 @@ new Vue({
 export const config = new Vue({
   data: {
     SERVER_URL: 'http://localhost:8001/'
-    // SERVER_URL: 'http://13.233.102.181:8001/'
   }
 })

@@ -16,35 +16,39 @@
                                       :per-page="perPage">
       <template v-if="expandable" slot="expand" slot-scope="row">
         <b-button size="sm" @click="row.toggleDetails" class="mr-2">
-          {{ row.detailsShowing ? 'Hide' : 'Show'}} Address
+          {{ row.detailsShowing ? 'Hide ' : 'Show '}} {{expandableText}}
         </b-button>
       </template>
-      <template slot="row-details" slot-scope="row" v-if="expandAddress">
-        <adr :individual="row.item" :entity="'IND'"></adr>
+      <template slot="row-details" slot-scope="row">
+        <adr :item="row.item" :entity="expandableEntity" @payment="goToPaymentPage"></adr>
       </template>
-      <template slot="table-caption">Total Records: {{data.length}}</template>
       <template v-if="actionableColumn" slot="actions" slot-scope="row">
         <i :class="'fa fa-pencil'" class="ml-1" style="cursor: pointer; color: green" size="sm" @click="onEditClicked(row.item)"/>
-        <i :class="'fa fa-trash'" class="ml-1" style="cursor: pointer; color: red" size="sm" @click="onDeleteClicked(row.item)"/>
+        <i :class="'fa fa-trash'" class="ml-1" style="cursor: pointer; color: red" size="sm" @click="onDeleteClicked(row.item)" v-if="enableDelete"/>
       </template>
+      <template slot="table-caption">Total Records: {{data.length}}</template>
     </b-table>
   </div>
 </template>
 <script>
-import Address from '../common/Address'
+import Child from '../common/ResultTableChild'
 export default {
   name: 'Individuals',
   components: {
-    'adr': Address
+    'adr': Child
   },
   props: {
     expandable: {
       type: Boolean,
       default: false
     },
-    expandAddress: {
-      type: Boolean,
-      default: false
+    expandableText: {
+      type: String,
+      default: 'Address'
+    },
+    expandableEntity: {
+      type: String,
+      default: null
     },
     actionable: {
       type: Boolean,
@@ -116,12 +120,12 @@ export default {
       row.item.expanded = !row.item.expanded
       // let o = row.toggleDetails
       // console.log(o)
+    },
+    goToPaymentPage (obj) {
+      this.$emit('payment', obj)
     }
   },
   mounted () {
-    // this.fields.actions = this.actions
-    // window.alert(this.fields)
-    // window.alert('ok')
   }
 }
 </script>

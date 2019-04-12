@@ -1,7 +1,7 @@
 <template>
   <div class="individualkyc">
     <div class="mt-0 ml-5 mr-5" style="width:80%; display: bold;" id="individualsTable">
-      <result-table class="mt-1"  :expandable=true :expandAddress=true :actionable=true :enableAdd=false :enableRefresh=true :enableSearch=true
+      <result-table class="mt-1"  :expandable=true :expandableText="'Address'" :expandableEntity="'Address'" :actionable=true :enableAdd=false :enableRefresh=true :enableSearch=true
                                   :fields="fields" :data="individuals" :currentPage="currentPage" :perPage="perPage"
                                   @refresh="getSummarizedIndividuals"/>
     </div>
