@@ -6,13 +6,15 @@
                                   @refresh="getSummarizedIndividuals" @payment="goToPaymentPage"/>
     </div>
     <div class="mt-0 ml-5 mr-5" style="width:80%; display: none;" id="payment">
-      <div>
+      <!-- <b-button class="b-button mb-0 ml-1" size="sm" variant="secondary" v-on:click="goBackToIndividuals()">Back</b-button> -->
+      <i class="fa fa-long-arrow-left fa-2x" style="cursor: pointer; color:gray; padding:5px;" v-on:click="goBackToIndividuals()"></i>
+      <i class="fa fa-print float-right fa-1x" style="cursor: pointer; color:gray; padding:5px;" v-on:click="print()">{{' ' + 'Print'}}</i>
+      <div id="printable">
         <b-form>
-          <b-button class="b-button mb-0 ml-1" size="sm" variant="secondary" v-on:click="goBackToIndividuals()">Back</b-button>
-          <b-card header="Payment" bg-variant="light">
+          <b-card header="Payment" bg-variant="light" style="backgroud-color:lightgreen">
             <b-row>
               <b-col>
-                <label><b>ID:</b> {{individual.individualId}}</label>
+                <label><b>Individual ID:</b> {{individual.individualId}}</label>
               </b-col>
               <b-col>
                 <label><b>Name:</b> {{individual.fullName}}</label>
@@ -44,33 +46,38 @@
 
             <b-row>
               <b-col>
-                <label><b>Earnings:</b> {{'INR ' + earnings.totalEarnings}}</label>
+                <label><b>Earnings:</b> {{'INR '}}{{earnings.totalEarnings | numFormat('0.00')}}</label>
               </b-col>
               <b-col>
                 <b-form-group>
-                  <label><b>Dues:</b> {{'INR ' + earnings.totalDues}}</label>
+                  <label><b>Dues:</b> {{'INR '}} {{ earnings.totalDues | numFormat('0.00')}}</label>
                 </b-form-group>
               </b-col>
               <b-col>
                 <b-form-group>
-                  <label><b>Overpaid:</b>  {{'INR ' + earnings.overPaid}}</label>
+                  <label><b>Overpaid:</b>  {{'INR '}} {{earnings.overPaid | numFormat('0.00')}}</label>
                 </b-form-group>
               </b-col>
               <b-col>
               </b-col>
             </b-row>
+            <div>
+              <i id="paymentHistory" style="cursor: pointer; color: blue;" v-on:click="showPaymentHistory = !showPaymentHistory" :class="!showPaymentHistory ? 'fa fa-plus' : 'fa fa-minus'">{{showHideHistorytext}}</i>
+              <div :style="showPaymentHistory ? 'display : block; border: 1px solid lightgreen;' : 'display : none;'">
+                <b-table class="b-table" style="cursor: default" striped hover responsive :items="payments" :fields="historyFields" :small="true" :fixed="true"></b-table>
+                <br>
+                <label><b>Total Salary Paid: </b>{{'INR '}}{{totalSalary | numFormat('0.00')}}</label><br>
+                <label><b>Total Dues Salary: </b>{{'INR '}}{{totalDuesSalary | numFormat('0.00')}}</label><br>
+                <label><b>Total Advance Paid: </b>{{'INR '}}{{totalAdvance | numFormat('0.00')}}</label><br>
+                <label><b>Total Dues Paid: </b>{{'INR '}}{{totalDuesPaid | numFormat('0.00')}}</label><br>
+                <label><b>Total Recovery Collected: </b>{{'INR '}}{{totalRecovery | numFormat('0.00')}}</label>
+              </div>
+            </div>
           </b-card>
         </b-form>
-        <br>
-        <div style="border: 1px dashed lightgreen;">
-          <i id="paymentHistory" style="cursor: pointer; color: blue;" v-on:click="showPaymentHistory = !showPaymentHistory" :class="!showPaymentHistory ? 'fa fa-plus' : 'fa fa-minus'">{{showHideHistorytext}}</i>
-          <div :style="showPaymentHistory ? 'display : block' : 'display : none'">
-            <b-table class="b-table" style="cursor: default" striped hover responsive :items="payments" :fields="historyFields" :small="true" :fixed="true"></b-table>
-          </div>
-        </div>
       </div>
       <br>
-      <b-form style="background-color: lightgreen; padding: 5px">
+      <b-form style="background-color: lightgreen; padding: 10px" title="Make Payment">
         <b-row>
           <b-col><label style="color: red;">{{errorMessage}}</label></b-col>
         </b-row>
@@ -134,7 +141,7 @@
         </b-row>
         <b-row>
           <b-col>
-            <b-button style="box-shadow: -2px -2px 34px -3px rgba(17,26,18,1);" type="submit" class="b-button float-right" variant="success" v-on:click.prevent="makePayment()">Make Payment</b-button>
+            <b-button style="box-shadow: 0px 0px 14px -2px rgba(0,0,0,0.75);" type="submit" class="b-button float-right" variant="success" v-on:click.prevent="makePayment()">Make Payment</b-button>
           </b-col>
         </b-row>
       </b-form>
@@ -289,7 +296,12 @@ export default {
       errorMessage: '',
       showPaymentHistory: false,
       showHideHistorytext: 'Show Payment History',
-      payments: []
+      payments: [],
+      totalSalary: 0,
+      totalDuesSalary: 0,
+      totalAdvance: 0,
+      totalDuesPaid: 0,
+      totalRecovery: 0
     }
   },
   methods: {
@@ -335,6 +347,13 @@ export default {
       this.salary = {}
       this.payment = this.getNewPymentObject()
       this.earnings = {}
+      this.payments = []
+      this.showPaymentHistory = false
+      this.totalSalary = 0
+      this.totalDuesSalary = 0
+      this.totalAdvance = 0
+      this.totalDuesPaid = 0
+      this.totalRecovery = 0
     },
     getSummarizedProjects: function () {
       let self = this
@@ -377,6 +396,13 @@ export default {
         self.payments = response.data
         self.$forceUpdate()
         console.log(self.payments)
+        for (let payment of self.payments) {
+          self.totalSalary = self.totalSalary + payment.salaryAmount
+          self.totalDuesSalary = self.totalDuesSalary + payment.dueSalaryAmount
+          self.totalAdvance = self.totalAdvance + payment.advancePayment
+          self.totalDuesPaid = self.totalDuesPaid + payment.duesPayment
+          self.totalRecovery = self.totalRecovery + payment.recoveryAmount
+        }
       }).catch(error => {
         self.$awn.alert(error.response.data.message)
       })
@@ -416,6 +442,9 @@ export default {
         }
       }
       return true
+    },
+    print: function () {
+      this.$htmlToPaper('printable')
     }
   },
   mounted () {

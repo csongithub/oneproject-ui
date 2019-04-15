@@ -13,6 +13,24 @@ import 'bootstrap-vue/dist/bootstrap-vue.css'
 // importing awn for awesome notifications
 import VueAWN from 'vue-awesome-notifications'
 
+import numFormat from 'vue-filter-number-format'
+import VueHtmlToPaper from 'vue-html-to-paper'
+
+const options = {
+  name: '_blank',
+  specs: [
+    'fullscreen=yes',
+    'titlebar=yes',
+    'scrollbars=yes'
+  ],
+  styles: [
+    'https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css',
+    'https://unpkg.com/kidlat-css/css/kidlat.css'
+  ]
+}
+
+Vue.use(VueHtmlToPaper, options)
+
 // importing font awesom packages
 // import { library } from '@fortawesome/fontawesome-svg-core'
 // import { faCogs, faTasks, faCreditCard, faTruck, faMale, faBars, faListAlt, faIdCard, faPlus, faFilter, faPencilAlt, faTrashAlt } from '@fortawesome/free-solid-svg-icons'
@@ -31,6 +49,8 @@ Vue.use(Vuelidate)
 Vue.use(VueAWN, {position: 'top-right', duration: 3000, icons: {'icons.success': 'check-circle'}})
 require('vue-awesome-notifications/dist/styles/style.css')
 
+Vue.filter('numFormat', numFormat)
+
 Vue.config.productionTip = false
 /* eslint-disable no-new */
 new Vue({
@@ -42,6 +62,6 @@ new Vue({
 
 export const config = new Vue({
   data: {
-    SERVER_URL: 'http://localhost:8001/'
+    SERVER_URL: 'http://13.126.200.71:8001/'
   }
 })
