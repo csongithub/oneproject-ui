@@ -97,6 +97,19 @@ export default {
           ]
         },
         {
+          name: 'Suppliers',
+          title: 'Suppliers',
+          icon: 'fa fa-users',
+          subMenu: [
+            {
+              title: 'Capture Supplier',
+              icon: 'fa fa-bars',
+              name: 'CaptureSupplier',
+              path: '/capturesupplier'
+            }
+          ]
+        },
+        {
           name: 'Billing',
           title: 'Billing & payments',
           icon: 'fa fa-credit-card',

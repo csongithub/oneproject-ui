@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+import NavBar from '../components/nav/NavBar'
+import Login from '../components/nav/Login'
+
 import Administration from '../components/admin/Administration'
 import Enumerations from '../components/admin/Enumerations'
 
@@ -12,6 +15,8 @@ import IndividualBasic from '../components/individual/IndividualBasic'
 import IndividualKYC from '../components/individual/IndividualKYC'
 import IndividualCommunication from '../components/individual/IndividualCommunication'
 
+import CaptureSupplier from '../components/supplier/CaptureSupplier'
+
 import IndividualBilling from '../components/billing/IndividualBilling'
 import SupplierBilling from '../components/billing/SupplierBilling'
 
@@ -21,6 +26,16 @@ Vue.use(Router)
 
 export default new Router({
   routes: [
+    {
+      path: '/login',
+      name: 'Login',
+      component: Login
+    },
+    {
+      path: '/navbar',
+      name: 'NavBar',
+      component: NavBar
+    },
     {
       path: '/administration',
       name: 'Administration',
@@ -65,6 +80,11 @@ export default new Router({
       path: '/individualbilling',
       name: 'IndividualBilling',
       component: IndividualBilling
+    },
+    {
+      path: '/capturesupplier',
+      name: 'CaptureSupplier',
+      component: CaptureSupplier
     },
     {
       path: '/supplierbilling',
