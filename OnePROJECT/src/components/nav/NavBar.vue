@@ -175,9 +175,8 @@ export default {
 </script>
 <style scoped>
 .nav-bar-main {
-  margin-top:30px;
   background-color:honeydew;
-  min-height: 83vh;
+  min-height: 90vh;
   box-shadow: 0px 10px 35px rgba(0, 87, 125, 0.16);
 }
 

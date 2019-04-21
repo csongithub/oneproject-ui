@@ -1,15 +1,23 @@
 <template>
-  <main class="container-fluid" :style="authenticated ? 'min-height: 100vh':''">
-    <div id="app">
-      <login @login="getLoginStatus" v-if="!authenticated"/>
-      <section class="app-main">
-        <nav-bar v-if="authenticated"/>
-      </section>
+  <div>
+    <div v-if="!authenticated">
+      <login @login="getLoginStatus" />
+      <!-- <footer class="d-flex flex-col justify-content-center">
+        <small id="appSubFooter">COPYRIGHT &copy; 2019 OnePROJECT, INC. ALL RIGHTS RESERVED.</small>
+      </footer> -->
     </div>
-    <footer class="d-flex flex-col justify-content-center mt-15">
-      <small  class="mt-2" id="appSubFooter">COPYRIGHT &copy; 2019 OnePROJECT, INC. ALL RIGHTS RESERVED.</small>
-    </footer>
-  </main>
+    <div v-if="authenticated" class="container-fluid" :style="'min-height: 100vh'">
+      <div id="app">
+        <section class="app-main">
+          <nav-bar/>
+        </section>
+      </div>
+      <footer class="d-flex flex-col justify-content-center mt-15">
+        <small  class="mt-2" id="appSubFooter">COPYRIGHT &copy; 2019 OnePROJECT, INC. ALL RIGHTS RESERVED.</small>
+      </footer>
+    </div>
+  </div>
+
 </template>
 
 <script>
@@ -34,7 +42,6 @@ export default {
     }
   },
   mounted () {
-    // this.authenticated = false
   },
   created () {
     this.authenticated = false
@@ -44,7 +51,4 @@ export default {
 <style lang="css">
 @import "../node_modules/font-awesome/css/font-awesome.min.css";
 @import "../src/assets/style/comon-custom.css";
-.app-main {
-  padding-top: 30px;
-}
 </style>
