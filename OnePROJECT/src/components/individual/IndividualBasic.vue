@@ -2,7 +2,7 @@
   <div class="individual-basic">
     <div class="mt-0 ml-5 mr-5" style="width:80%;">
       <result-table class="mt-4"  :enableAdd=true :addText="'Add Individual'" @add="showCreateIndividualModal"
-                                  :enableRefresh=true :refreshText="'Refresh'" @refresh="getAllIndividuals"
+                                  :enableRefresh=true :refreshText="'Refresh'" @refresh="getClientIndividuals"
                                   :fields="fields" :data="allIndividuals" :currentPage="currentPage" :perPage="perPage"
                                   @edit="editIndividual"
                                   @delete="deleteIndividual"/>
@@ -182,6 +182,7 @@ export default {
   },
   data () {
     return {
+      clientId: 0,
       baseAPI: config.SERVER_URL + 'IndividualEndPoint/',
       enumerationBaseAPI: config.SERVER_URL + 'AdminEnumerationsPreferencesEndPoint/',
       currentPage: 1,
@@ -267,6 +268,7 @@ export default {
       if (this.address !== null) {
         Vue.set(this.individual, 'address', this.address)
       }
+      Vue.set(this.individual, 'clientId', this.clientId)
       axios.post(this.baseAPI + 'addOrUpdateIndividual', this.individual).then(response => {
         thisScope.allIndividuals = response.data
         this.$awn.success('Individual Added Successfully.')
@@ -275,9 +277,9 @@ export default {
         this.$awn.alert(error.response.data.message)
       })
     },
-    getAllIndividuals () {
+    getClientIndividuals () {
       let thisScope = this
-      axios.get(this.baseAPI + 'getAllIndividuals').then(response => {
+      axios.get(this.baseAPI + 'getClientIndividuals' + '/' + this.clientId).then(response => {
         thisScope.allIndividuals = response.data
       }).catch(error => {
         this.$awn.alert(error.response.data.message)
@@ -307,7 +309,7 @@ export default {
     },
     getEnumerations () {
       let thisScope = this
-      axios.get(this.enumerationBaseAPI + 'getPreferences').then(response => {
+      axios.get(this.enumerationBaseAPI + 'getPreferences' + '/' + this.clientId).then(response => {
         let o = response.data
         thisScope.positionTypes = JSON.parse(o.positionJson) !== null ? JSON.parse(o.positionJson) : []
         thisScope.genderTypes = JSON.parse(o.genderJson) !== null ? JSON.parse(o.genderJson) : []
@@ -315,7 +317,8 @@ export default {
     }
   },
   mounted () {
-    this.getAllIndividuals()
+    this.clientId = this.$session.get('clientId')
+    this.getClientIndividuals()
     this.getEnumerations()
   }
 }

@@ -3,7 +3,7 @@
     <div class="mt-0 ml-5 mr-5" style="width:80%; display: bold;" id="individualsTable">
       <result-table class="mt-1"  :expandable=true :expandableText="'Address'" :expandableEntity="'Address'" :actionable=true :enableAdd=false :enableRefresh=true :enableSearch=true
                                   :fields="fields" :data="individuals" :currentPage="currentPage" :perPage="perPage"
-                                  @refresh="getSummarizedIndividuals"/>
+                                  @refresh="getSummarizedIndividualsForClient"/>
     </div>
   </div>
 </template>
@@ -19,6 +19,7 @@ export default {
   },
   data () {
     return {
+      clientId: 0,
       baseAPI: config.SERVER_URL + 'IndividualEndPoint/',
       currentPage: 1,
       perPage: 10,
@@ -50,9 +51,9 @@ export default {
     }
   },
   methods: {
-    getSummarizedIndividuals: function () {
+    getSummarizedIndividualsForClient: function () {
       let self = this
-      axios.get(this.baseAPI + 'getSummarizedIndividuals').then(response => {
+      axios.get(this.baseAPI + 'getSummarizedIndividualsForClient' + '/' + this.clientId).then(response => {
         let o = response.data
         console.log(o)
         self.individuals = o
@@ -62,7 +63,8 @@ export default {
     }
   },
   mounted () {
-    this.getSummarizedIndividuals()
+    this.clientId = this.$session.get('clientId')
+    this.getSummarizedIndividualsForClient()
   }
 }
 </script>

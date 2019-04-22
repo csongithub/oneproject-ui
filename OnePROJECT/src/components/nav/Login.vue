@@ -57,7 +57,9 @@ export default {
         let token = response.data
         console.log(token)
         if (token.authenticated) {
-          this.$emit('login', {'status': true})
+          this.$session.start()
+          this.$session.set('clientId', token.clientId)
+          this.$emit('login', {'status': true, 'clientId': token.clientId})
         } else {
           this.success = true
           this.errorMessage = 'Invalid Username or Password'

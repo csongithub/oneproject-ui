@@ -44,7 +44,10 @@ export default {
   mounted () {
   },
   created () {
-    this.authenticated = false
+    if (this.$session.exists()) {
+      this.authenticated = false
+      this.$session.destroy()
+    }
   }
 }
 </script>

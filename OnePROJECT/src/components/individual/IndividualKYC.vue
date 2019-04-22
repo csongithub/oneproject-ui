@@ -45,6 +45,7 @@ export default {
   },
   data () {
     return {
+      clientId: 0,
       baseAPI: config.SERVER_URL + 'IndividualEndPoint/',
       enumerationBaseAPI: config.SERVER_URL + 'AdminEnumerationsPreferencesEndPoint/',
       currentPage: 1,
@@ -106,7 +107,7 @@ export default {
     },
     getKYCData () {
       let thisScope = this
-      axios.get(this.baseAPI + 'getKYCData').then(response => {
+      axios.get(this.baseAPI + 'getKYCData' + '/' + this.clientId).then(response => {
         thisScope.kycData = response.data
       }).catch(error => {
         thisScope.$awn.alert(error.response.data.message)
@@ -122,6 +123,7 @@ export default {
     },
     confirmKYC () {
       let thisScope = this
+      this.kycDataWrapper.clientId = this.clientId
       axios.put(thisScope.baseAPI + 'confirmKYC', this.kycDataWrapper).then(response => {
         thisScope.kycData = response.data
         thisScope.$awn.success('KYC Updated Successfully')
@@ -132,7 +134,7 @@ export default {
     },
     getDocumentsType () {
       let thisScope = this
-      axios.get(this.enumerationBaseAPI + 'getPreferences').then(response => {
+      axios.get(this.enumerationBaseAPI + 'getPreferences' + '/' + this.clientId).then(response => {
         let o = response.data
         thisScope.documentsType = JSON.parse(o.kycSupportedDocsJson) !== null ? JSON.parse(o.kycSupportedDocsJson) : []
       }).catch(error => {
@@ -141,6 +143,7 @@ export default {
     }
   },
   mounted () {
+    this.clientId = this.$session.get('clientId')
     this.getDocumentsType()
     this.getKYCData()
   }

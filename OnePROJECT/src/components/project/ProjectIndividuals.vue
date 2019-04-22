@@ -95,6 +95,7 @@ export default {
   },
   data () {
     return {
+      clientId: 0,
       baseAPI: config.SERVER_URL + 'ProjectEndPoint/',
       baseIndividualAPI: config.SERVER_URL + 'IndividualEndPoint/',
       enumerationBaseAPI: config.SERVER_URL + 'AdminEnumerationsPreferencesEndPoint/',
@@ -143,7 +144,7 @@ export default {
   },
   methods: {
     showAddIndividualModal () {
-      this.getAllIndividuals()
+      this.getClientIndividuals()
       this.activeAction = 'Add'
       this.$refs.addIndividualRef.show()
     },
@@ -151,17 +152,17 @@ export default {
       this.$refs.addIndividualRef.hide()
       this.individualMaping = {role: null, individualId: null}
     },
-    getSummarizedProjects () {
+    getSummarizedProjectsForClient () {
       let thisScope = this
-      axios.get(this.baseAPI + 'getSummarizedProjects').then(response => {
+      axios.get(this.baseAPI + 'getSummarizedProjectsForClient' + '/' + this.clientId).then(response => {
         thisScope.allProjects = response.data
       }).catch(error => {
         thisScope.$awn.alert(error.response.data.message)
       })
     },
-    getAllIndividuals () {
+    getClientIndividuals () {
       let self = this
-      axios.get(this.baseIndividualAPI + 'getAllIndividuals').then(response => {
+      axios.get(this.baseIndividualAPI + 'getClientIndividuals' + '/' + this.clientId).then(response => {
         if (this.projectIndividuals.length === 0) {
           self.allIndividuals = response.data
         } else {
@@ -185,38 +186,38 @@ export default {
       })
     },
     addIndividualToProject () {
-      let thisScope = this
+      let self = this
       Vue.set(this.individualMaping, 'projectId', this.selectedProject.projectId)
       axios.post(this.baseAPI + 'linkIndividual', this.individualMaping).then(response => {
-        thisScope.projectIndividuals = response.data
-        thisScope.$awn.success('Individual Added Successfully')
-        thisScope.hideAddIndividualModal()
+        self.projectIndividuals = response.data
+        self.$awn.success('Individual Added Successfully')
+        self.hideAddIndividualModal()
       }).catch(error => {
-        thisScope.$awn.alert(error.response.data.message)
+        self.$awn.alert(error.response.data.message)
       })
     },
     getIndividualsForProject () {
-      let thisScope = this
+      let self = this
       axios.get(this.baseAPI + 'getIndividualsForProject/' + this.selectedProject.projectId).then(response => {
-        thisScope.projectIndividuals = response.data
+        self.projectIndividuals = response.data
       }).catch(error => {
-        thisScope.$awn.alert(error.response.data.message)
+        self.$awn.alert(error.response.data.message)
       })
     },
     getEnumerations () {
-      let thisScope = this
-      axios.get(this.enumerationBaseAPI + 'getPreferences').then(response => {
+      let self = this
+      axios.get(this.enumerationBaseAPI + 'getPreferences' + '/' + this.clientId).then(response => {
         let o = response.data
-        thisScope.positionTypes = JSON.parse(o.positionJson) !== null ? JSON.parse(o.positionJson) : []
+        self.positionTypes = JSON.parse(o.positionJson) !== null ? JSON.parse(o.positionJson) : []
       })
     },
     deleteIndividualFromProject (obj) {
-      let thisScope = this
+      let self = this
       let handleConfirm = function () {
-        axios.post(thisScope.baseAPI + 'delinkIndividual/' + obj.projectId + '/' + obj.individualId).then(response => {
+        axios.post(self.baseAPI + 'delinkIndividual/' + obj.projectId + '/' + obj.individualId).then(response => {
           let o = response.data
-          thisScope.projectIndividuals = o.projectIndividuals
-          thisScope.$awn.success('Individual Deleted Successfully')
+          self.projectIndividuals = o.projectIndividuals
+          self.$awn.success('Individual Deleted Successfully')
         })
       }
       let handleCancel = function () {
@@ -242,7 +243,8 @@ export default {
     }
   },
   mounted () {
-    this.getSummarizedProjects()
+    this.clientId = this.$session.get('clientId')
+    this.getSummarizedProjectsForClient()
     this.getEnumerations()
   }
 }

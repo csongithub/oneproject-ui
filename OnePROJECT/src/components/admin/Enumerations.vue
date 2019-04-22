@@ -75,6 +75,7 @@ export default {
   name: 'Administration',
   data () {
     return {
+      clientId: 0,
       baseAPI: config.SERVER_URL + 'AdminEnumerationsPreferencesEndPoint/',
       deleteIcon: 'fa fa-minus',
       title: '',
@@ -149,6 +150,7 @@ export default {
         this.enumPreferences.value = JSON.stringify(this.salaryIntervals)
       }
       let thisScope = this
+      this.enumPreferences.clientId = this.$session.get('clientId')
       axios.put(this.baseAPI + 'addOrUpdatePreferences', this.enumPreferences).then(response => {
         let o = response.data
         thisScope.genderTypes = JSON.parse(o.genderJson) !== null ? JSON.parse(o.genderJson) : []
@@ -207,7 +209,7 @@ export default {
     },
     getPreferences () {
       let thisScope = this
-      axios.get(this.baseAPI + 'getPreferences').then(response => {
+      axios.get(this.baseAPI + 'getPreferences' + '/' + this.clientId).then(response => {
         let o = response.data
         thisScope.genderTypes = JSON.parse(o.genderJson) !== null ? JSON.parse(o.genderJson) : []
         thisScope.positionTypes = JSON.parse(o.positionJson) !== null ? JSON.parse(o.positionJson) : []
@@ -221,6 +223,7 @@ export default {
     }
   },
   mounted () {
+    this.clientId = this.$session.get('clientId')
     this.getPreferences()
   }
 }

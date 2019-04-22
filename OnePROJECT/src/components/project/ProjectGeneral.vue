@@ -2,7 +2,7 @@
   <div class="project-general">
     <div class="mt-0 ml-5 mr-5" style="width:80%;">
       <result-table class="mt-4"  :enableAdd=true :addText="'Add Project'" @add="showCreateProjectModal"
-                                  :enableRefresh=true :refreshText="'Refresh'" @refresh="getAllProjects"
+                                  :enableRefresh=true :refreshText="'Refresh'" @refresh="getClientProjects"
                                   :fields="fields" :data="allProjects" :currentPage="currentPage" :perPage="perPage"
                                   :enableDelete="enableDelete"
                                   @edit="editProject"
@@ -70,6 +70,7 @@ export default {
   },
   data () {
     return {
+      clientId: 0,
       baseAPI: config.SERVER_URL + 'ProjectEndPoint/',
       enumerationBaseAPI: config.SERVER_URL + 'AdminEnumerationsPreferencesEndPoint/',
       currentPage: 1,
@@ -139,6 +140,7 @@ export default {
       if (!this.isValidProject()) {
         return
       }
+      this.project.clientId = this.clientId
       axios.post(this.baseAPI + 'addOrUpdateProject', this.project).then(response => {
         thisScope.allProjects = response.data
         thisScope.$awn.success('Project Added Successfully')
@@ -147,9 +149,9 @@ export default {
         thisScope.$awn.alert(error.response.data.message)
       })
     },
-    getAllProjects () {
+    getClientProjects () {
       let thisScope = this
-      axios.get(this.baseAPI + 'getAllProjects').then(response => {
+      axios.get(this.baseAPI + 'getClientProjects' + '/' + this.clientId).then(response => {
         thisScope.allProjects = response.data
       }).catch(error => {
         thisScope.$awn.alert(error.response.data.message)
@@ -157,7 +159,7 @@ export default {
     },
     getProjectType () {
       let thisScope = this
-      axios.get(this.enumerationBaseAPI + 'getPreferences').then(response => {
+      axios.get(this.enumerationBaseAPI + 'getPreferences' + '/' + this.clientId).then(response => {
         let o = response.data
         thisScope.projectTypes = JSON.parse(o.projectTypeJson) !== null ? JSON.parse(o.projectTypeJson) : []
       })
@@ -222,7 +224,8 @@ export default {
     }
   },
   mounted () {
-    this.getAllProjects()
+    this.clientId = this.$session.get('clientId')
+    this.getClientProjects()
     this.getProjectType()
   }
 }

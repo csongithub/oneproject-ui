@@ -19,6 +19,8 @@ import VueHtmlToPaper from 'vue-html-to-paper'
 import Multiselect from 'vue-multiselect'
 
 import IdleVue from 'idle-vue'
+import VueSession from 'vue-session'
+Vue.use(VueSession)
 
 Vue.component('multiselect', Multiselect)
 
