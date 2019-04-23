@@ -19,7 +19,7 @@
             </label>
             <p v-if="success" style="color: red">{{errorMessage}}</p>
           </div>
-          <div class="container" style="background-color:#f1f1f1">
+          <div class="footer">
             <button type="button" class="cancelbtn">Cancel</button>
             <span class="psw">Forgot <a href="#">password?</a></span>
           </div>

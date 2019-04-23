@@ -17,8 +17,8 @@ form{
   margin-top: 10%;
   margin-left: 37.5%;
   max-width: 25%;
-  background-color:rgb(91, 145, 112);
-  box-shadow: 0px 10px 35px rgb(86, 75, 75);
+  background-color:rgb(227, 245, 234);
+  box-shadow: -2px 2px 22px 5px rgb(36, 41, 36);
 }
 input[type=text], input[type=password] {
   width: 100%;
@@ -55,6 +55,10 @@ img.avatar {
 }
 .container {
   padding: 10px;
+}
+.footer{
+  padding: 5px;
+  background-color:#5f8568
 }
 span.psw {
   float: right;
