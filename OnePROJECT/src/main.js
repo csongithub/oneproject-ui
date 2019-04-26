@@ -27,7 +27,7 @@ Vue.component('multiselect', Multiselect)
 const eventsHub = new Vue()
 Vue.use(IdleVue, {
   eventEmitter: eventsHub,
-  idleTime: 10000
+  idleTime: 60000 // log out time in idle state is 60 seconds
 })
 
 const options = {
@@ -69,10 +69,8 @@ new Vue({
     }
   },
   onIdle () {
-    this.messageStr = 'ZZZ'
   },
   onActive () {
-    this.messageStr = 'Hello'
   },
   template: '<App/>'
 })

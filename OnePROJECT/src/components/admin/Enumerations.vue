@@ -42,7 +42,7 @@
       </b-col>
       <b-col>
         <table border="1">
-          <thead><th>Position Type<font-awesome-icon :class="'fa fa-plus operation ml-2'" style="float:right" v-on:click="showAddModal(enumerationTypes.position)"/></th></thead>
+          <thead><th>Position Type<i :class="'fa fa-plus operation ml-2'" style="float:right" v-on:click="showAddModal(enumerationTypes.position)"/></th></thead>
           <tbody>
             <tr v-for="(position, index) of positionTypes" :key="position.name"><td>{{position.name + ' '}}<i @click="deleteOption(enumerationTypes.position, index)" :class="deleteIcon + ' float-right'" style="cursor:pointer; color:black;"/></td></tr>
           </tbody>
@@ -149,20 +149,20 @@ export default {
         this.salaryIntervals.push({ 'name': this.value })
         this.enumPreferences.value = JSON.stringify(this.salaryIntervals)
       }
-      let thisScope = this
-      this.enumPreferences.clientId = this.$session.get('clientId')
+      let self = this
+      this.enumPreferences.clientId = this.clientId
       axios.put(this.baseAPI + 'addOrUpdatePreferences', this.enumPreferences).then(response => {
         let o = response.data
-        thisScope.genderTypes = JSON.parse(o.genderJson) !== null ? JSON.parse(o.genderJson) : []
-        thisScope.positionTypes = JSON.parse(o.positionJson) !== null ? JSON.parse(o.positionJson) : []
-        thisScope.projectTypes = JSON.parse(o.projectTypeJson) !== null ? JSON.parse(o.projectTypeJson) : []
-        thisScope.kycDocuments = JSON.parse(o.kycSupportedDocsJson) !== null ? JSON.parse(o.kycSupportedDocsJson) : []
-        thisScope.materialTypes = JSON.parse(o.materialTypeJson) !== null ? JSON.parse(o.materialTypeJson) : []
-        thisScope.salaryIntervals = JSON.parse(o.salaryIntervalJson) !== null ? JSON.parse(o.salaryIntervalJson) : []
-        thisScope.$awn.success('Added Successfully')
-        thisScope.hideModal()
+        self.genderTypes = JSON.parse(o.genderJson) !== null ? JSON.parse(o.genderJson) : []
+        self.positionTypes = JSON.parse(o.positionJson) !== null ? JSON.parse(o.positionJson) : []
+        self.projectTypes = JSON.parse(o.projectTypeJson) !== null ? JSON.parse(o.projectTypeJson) : []
+        self.kycDocuments = JSON.parse(o.kycSupportedDocsJson) !== null ? JSON.parse(o.kycSupportedDocsJson) : []
+        self.materialTypes = JSON.parse(o.materialTypeJson) !== null ? JSON.parse(o.materialTypeJson) : []
+        self.salaryIntervals = JSON.parse(o.salaryIntervalJson) !== null ? JSON.parse(o.salaryIntervalJson) : []
+        self.$awn.success('Added Successfully')
+        self.hideModal()
       }).catch(error => {
-        thisScope.$awn.alert(error.response.data.message)
+        self.$awn.alert(error.response.data.message)
       })
     },
     deleteOption (preferencesType, index) {
@@ -189,6 +189,7 @@ export default {
           this.enumPreferences.value = JSON.stringify(this.salaryIntervals)
         }
         let self = this
+        this.enumPreferences.clientId = this.clientId
         axios.put(this.baseAPI + 'addOrUpdatePreferences', this.enumPreferences).then(response => {
           let o = response.data
           self.genderTypes = JSON.parse(o.genderJson) !== null ? JSON.parse(o.genderJson) : []
@@ -208,17 +209,17 @@ export default {
       this.$awn.confirm('You are tyrying to delete ' + preferencesType + ', Are you sure?', handleConfirm, handleCancel)
     },
     getPreferences () {
-      let thisScope = this
+      let self = this
       axios.get(this.baseAPI + 'getPreferences' + '/' + this.clientId).then(response => {
         let o = response.data
-        thisScope.genderTypes = JSON.parse(o.genderJson) !== null ? JSON.parse(o.genderJson) : []
-        thisScope.positionTypes = JSON.parse(o.positionJson) !== null ? JSON.parse(o.positionJson) : []
-        thisScope.projectTypes = JSON.parse(o.projectTypeJson) !== null ? JSON.parse(o.projectTypeJson) : []
-        thisScope.kycDocuments = JSON.parse(o.kycSupportedDocsJson) !== null ? JSON.parse(o.kycSupportedDocsJson) : []
-        thisScope.materialTypes = JSON.parse(o.materialTypeJson) !== null ? JSON.parse(o.materialTypeJson) : []
-        thisScope.salaryIntervals = JSON.parse(o.salaryIntervalJson) !== null ? JSON.parse(o.salaryIntervalJson) : []
+        self.genderTypes = JSON.parse(o.genderJson) !== null ? JSON.parse(o.genderJson) : []
+        self.positionTypes = JSON.parse(o.positionJson) !== null ? JSON.parse(o.positionJson) : []
+        self.projectTypes = JSON.parse(o.projectTypeJson) !== null ? JSON.parse(o.projectTypeJson) : []
+        self.kycDocuments = JSON.parse(o.kycSupportedDocsJson) !== null ? JSON.parse(o.kycSupportedDocsJson) : []
+        self.materialTypes = JSON.parse(o.materialTypeJson) !== null ? JSON.parse(o.materialTypeJson) : []
+        self.salaryIntervals = JSON.parse(o.salaryIntervalJson) !== null ? JSON.parse(o.salaryIntervalJson) : []
       }).catch(error => {
-        thisScope.$awn.alert(error.response.data.message)
+        self.$awn.alert(error.response.data.message)
       })
     }
   },

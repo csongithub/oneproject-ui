@@ -2,11 +2,9 @@
   <div>
     <div v-if="!authenticated">
       <login @login="getLoginStatus" />
-      <!-- <footer class="d-flex flex-col justify-content-center">
-        <small id="appSubFooter">COPYRIGHT &copy; 2019 OnePROJECT, INC. ALL RIGHTS RESERVED.</small>
-      </footer> -->
     </div>
     <div v-if="authenticated" class="container-fluid" :style="'min-height: 100vh'">
+      <custom-header :user="user" @logout="logout"/>
       <div id="app">
         <section class="app-main">
           <nav-bar/>
@@ -22,15 +20,19 @@
 
 <script>
 import NavBar from './components/nav/NavBar.vue'
+import header from './components/nav/header'
 import login from './components/nav/Login'
 export default {
   name: 'App',
   components: {
     'nav-bar': NavBar,
-    login
+    login,
+    'custom-header': header
   },
   data () {
     return {
+      clientId: 0,
+      user: '',
       authenticated: false
     }
   },
@@ -38,16 +40,21 @@ export default {
     getLoginStatus: function (obj) {
       if (obj.status) {
         this.authenticated = true
+        this.clientId = obj.clientId
+        this.user = obj.user
+      }
+    },
+    logout: function () {
+      if (this.$session.exists()) {
+        this.authenticated = false
+        this.$session.destroy()
       }
     }
   },
   mounted () {
   },
   created () {
-    if (this.$session.exists()) {
-      this.authenticated = false
-      this.$session.destroy()
-    }
+    this.logout()
   }
 }
 </script>

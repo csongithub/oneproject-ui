@@ -2,7 +2,7 @@
   <div class="individual-basic">
     <div class="mt-0 ml-5 mr-5" style="width:80%;">
       <result-table class="mt-4"  :enableAdd=true :addText="'Add Supplier'" @add="showCaptureSupplier"
-                                  :enableRefresh=true :refreshText="'Refresh'" @refresh="getAllSuppliers"
+                                  :enableRefresh=true :refreshText="'Refresh'" @refresh="getClientSuppliers"
                                   :fields="fields" :data="allSuppliers" :currentPage="currentPage" :perPage="perPage"
                                   @edit="editSupplier"
                                   @delete="deleteSupplier"/>
@@ -164,6 +164,7 @@ export default {
   },
   data () {
     return {
+      clientId: 0,
       baseAPI: config.SERVER_URL + 'SupplierEndPoint/',
       enumerationBaseAPI: config.SERVER_URL + 'AdminEnumerationsPreferencesEndPoint/',
       currentPage: 1,
@@ -230,6 +231,7 @@ export default {
         materials = materials + ', ' + m
       }
       Vue.set(this.supplier, 'materials', materials.slice(1))
+      Vue.set(this.supplier, 'clientId', this.clientId)
       axios.put(this.baseAPI + 'addOrUpdateSupplier', this.supplier).then(response => {
         let o = response.data
         console.log(o)
@@ -240,9 +242,9 @@ export default {
         this.$awn.alert(error.response.data.message)
       })
     },
-    getAllSuppliers: function () {
+    getClientSuppliers: function () {
       let self = this
-      axios.get(this.baseAPI + 'getAppSuppliers').then(response => {
+      axios.get(this.baseAPI + 'getClientSuppliers' + '/' + this.clientId).then(response => {
         let o = response.data
         console.log(o)
         self.allSuppliers = o
@@ -256,15 +258,16 @@ export default {
     },
     getMaterials () {
       let self = this
-      axios.get(this.enumerationBaseAPI + 'getPreferences').then(response => {
+      axios.get(this.enumerationBaseAPI + 'getPreferences' + '/' + this.clientId).then(response => {
         let o = response.data
         self.materialTypes = JSON.parse(o.materialTypeJson) !== null ? JSON.parse(o.materialTypeJson) : []
       })
     }
   },
   mounted () {
+    this.clientId = this.$session.get('clientId')
     this.getMaterials()
-    this.getAllSuppliers()
+    this.getClientSuppliers()
   }
 }
 </script>

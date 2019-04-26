@@ -80,6 +80,7 @@ export default {
   },
   data () {
     return {
+      clientId: 0,
       baseAPI: config.SERVER_URL + 'IndividualEndPoint/',
       enumerationBaseAPI: config.SERVER_URL + 'AdminEnumerationsPreferencesEndPoint/',
       baseAPIForSalary: config.SERVER_URL + 'SalaryEndPoint/',
@@ -112,7 +113,7 @@ export default {
     },
     getSalaryIntervals () {
       let thisScope = this
-      axios.get(this.enumerationBaseAPI + 'getPreferences').then(response => {
+      axios.get(this.enumerationBaseAPI + 'getPreferences' + '/' + this.clientId).then(response => {
         let o = response.data
         thisScope.salaryIntervalTypes = JSON.parse(o.salaryIntervalJson) !== null ? JSON.parse(o.salaryIntervalJson) : []
       })
@@ -135,6 +136,7 @@ export default {
     }
   },
   mounted () {
+    this.clientId = this.$session.get('clientId')
     this.getSalaryIntervals()
     this.getIndividualSalary()
   }

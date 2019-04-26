@@ -1,7 +1,7 @@
 <template>
     <div id="login" class="login">
       <b-container>
-        <form>
+        <form style="border-style: solid; border-width: 10px; border-color: white">
           <div class="namecontainer">
             <label class="name"><b>OnePROJECT</b></label>
           </div>
@@ -59,7 +59,7 @@ export default {
         if (token.authenticated) {
           this.$session.start()
           this.$session.set('clientId', token.clientId)
-          this.$emit('login', {'status': true, 'clientId': token.clientId})
+          this.$emit('login', {'status': true, 'clientId': token.clientId, 'user': this.username})
         } else {
           this.success = true
           this.errorMessage = 'Invalid Username or Password'

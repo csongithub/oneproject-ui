@@ -3,7 +3,7 @@
     <div class="mt-0 ml-5 mr-5" style="width:80%;" id="individuals">
       <result-table class="mt-1"  :expandable=true :expandableText="'Salary'" :expandableEntity="'Salary'" :actionable=true :enableAdd=false :enableDelete=false :enableRefresh=true :enableSearch=true
                                   :fields="fields" :data="individuals" :currentPage="currentPage" :perPage="perPage"
-                                  @refresh="getSummarizedIndividuals" @payment="goToPaymentPage"/>
+                                  @refresh="getSummarizedIndividualsForClient" @payment="goToPaymentPage"/>
     </div>
     <div class="mt-0 ml-5 mr-5" style="width:80%; display: none;" id="payment">
       <!-- <b-button class="b-button mb-0 ml-1" size="sm" variant="secondary" v-on:click="goBackToIndividuals()">Back</b-button> -->
@@ -214,6 +214,7 @@ export default {
   },
   data () {
     return {
+      clientId: 0,
       baseAPI: config.SERVER_URL + 'PaymentEndPoint/',
       baseAPIForIndividual: config.SERVER_URL + 'IndividualEndPoint/',
       baseAPIForProject: config.SERVER_URL + 'ProjectEndPoint/',
@@ -321,9 +322,9 @@ export default {
         entryDate: null
       }
     },
-    getSummarizedIndividuals: function () {
+    getSummarizedIndividualsForClient: function () {
       let self = this
-      axios.get(this.baseAPIForIndividual + 'getSummarizedIndividuals').then(response => {
+      axios.get(this.baseAPIForIndividual + 'getSummarizedIndividualsForClient' + '/' + this.clientId).then(response => {
         let o = response.data
         console.log(o)
         self.individuals = o
@@ -448,7 +449,8 @@ export default {
     }
   },
   mounted () {
-    this.getSummarizedIndividuals()
+    this.clientId = this.$session.get('clientId')
+    this.getSummarizedIndividualsForClient()
     this.getSummarizedProjects()
   }
 }
