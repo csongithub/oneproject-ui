@@ -64,6 +64,12 @@ export default {
               path: '/projectindividuals'
             },
             {
+              title: 'Suppliers',
+              icon: 'fa fa-users',
+              name: 'ProjectSuppliers',
+              path: '/projectsuppliers'
+            },
+            {
               title: 'Tools & Machines',
               icon: 'fa fa-truck',
               name: 'ProjectTools',

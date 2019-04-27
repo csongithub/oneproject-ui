@@ -1,7 +1,7 @@
 <template>
     <div id="login" class="login">
       <b-container>
-        <form style="border-style: solid; border-width: 10px; border-color: white">
+        <form style="">
           <div class="namecontainer">
             <label class="name"><b>OnePROJECT</b></label>
           </div>
@@ -15,7 +15,7 @@
             <input type="password" v-model="password" placeholder="Enter Password" required><br>
             <button type="submit" v-on:click="authenticateUser">Login</button>
             <label>
-              <input type="checkbox" checked="checked"> Remember me
+              <input type="checkbox" v-model="remember" checked="checked"> Remember me
             </label>
             <p v-if="success" style="color: red">{{errorMessage}}</p>
           </div>
@@ -43,6 +43,7 @@ export default {
       avatar: '',
       username: '',
       password: '',
+      remember: true,
       errorMessage: '',
       success: false,
       clientCredential: {}

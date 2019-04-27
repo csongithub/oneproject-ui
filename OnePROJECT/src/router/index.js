@@ -9,6 +9,7 @@ import Enumerations from '../components/admin/Enumerations'
 
 import ProjectGeneral from '../components/project/ProjectGeneral'
 import ProjectIndividuals from '../components/project/ProjectIndividuals'
+import ProjectSuppliers from '../components/project/ProjectSuppliers.vue'
 import ProjectTools from '../components/project/ProjectTools'
 
 import IndividualBasic from '../components/individual/IndividualBasic'
@@ -55,6 +56,11 @@ export default new Router({
       path: '/projectindividuals',
       name: 'ProjectIndividuals',
       component: ProjectIndividuals
+    },
+    {
+      path: '/projectsuppliers',
+      name: 'ProjectSuppliers',
+      component: ProjectSuppliers
     },
     {
       path: '/projecttools',
