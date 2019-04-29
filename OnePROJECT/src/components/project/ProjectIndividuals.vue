@@ -83,7 +83,7 @@
 <script>
 import Vue from 'vue'
 import axios from 'axios'
-import {config} from '../../main.js'
+import {config} from '../../config.js'
 import DatePicker from 'vue2-datepicker'
 import ResultTable from '../common/ResultTable'
 
@@ -153,11 +153,11 @@ export default {
       this.individualMaping = {role: null, individualId: null}
     },
     getSummarizedProjectsForClient () {
-      let thisScope = this
+      let self = this
       axios.get(this.baseAPI + 'getSummarizedProjectsForClient' + '/' + this.clientId).then(response => {
-        thisScope.allProjects = response.data
+        self.allProjects = response.data
       }).catch(error => {
-        thisScope.$awn.alert(error.response.data.message)
+        self.$awn.alert(error.response.data.message)
       })
     },
     getClientIndividuals () {

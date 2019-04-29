@@ -11,7 +11,7 @@
       <i class="fa fa-print float-right fa-1x" style="cursor: pointer; color:gray; padding:5px;" v-on:click="print()">{{' ' + 'Print'}}</i>
       <div id="printable">
         <b-form>
-          <b-card header="Payment" bg-variant="light" style="backgroud-color:lightgreen">
+          <b-card header="Payment" bg-variant="light">
             <b-row>
               <b-col>
                 <label><b>Individual ID:</b> {{individual.individualId}}</label>

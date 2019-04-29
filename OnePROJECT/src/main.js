@@ -27,7 +27,8 @@ Vue.component('multiselect', Multiselect)
 const eventsHub = new Vue()
 Vue.use(IdleVue, {
   eventEmitter: eventsHub,
-  idleTime: 60000 // log out time in idle state is 60 seconds
+  // idleTime: 60000 // prod idle logout time, uncomment this during production
+  idleTime: 1000000 // dev idle log out time, comment this during production
 })
 
 const options = {

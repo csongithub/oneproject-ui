@@ -3,7 +3,7 @@
     <div class="mt-0 ml-5 mr-5">
       <b-form-group label-cols-sm="1" label="Select project: ">
         <b-input-group-append class="ml-4">
-          <b-form-select class = "b-form-select" v-model="selectedProject"  @change="getSuppliersForProject" size="sm" style="width: 39%;">
+          <b-form-select class = "b-form-select" v-model="selectedProject"  @change="getProjectSuppliers" size="sm" style="width: 39%;">
             <option v-for="project in allProjects" v-bind:key="project.projectId" :value="project">{{project.projectName}}</option>
             <option slot="first" :value="null">Please Select a Project</option>
           </b-form-select>
@@ -13,7 +13,7 @@
     <div class="mt-0 ml-5 mr-5" style="width:80%;">
       <result-table class="mt-1"  :actionable="selectedProject ? true: false" :enableDelete="enableDelete" :fields="fields" :data="projectSuppliers" :currentPage="currentPage" :perPage="perPage"
                                   @add="showAddSupplierModal"
-                                  @refresh="getSuppliersForProject"/>
+                                  @refresh="getProjectSuppliers"/>
     </div>
     <b-modal id="addSupplierModal" ref="addSupplierModalRef" title="Add Supplier to Project" centered  size="md">
       <b-form>
@@ -142,10 +142,10 @@ export default {
         self.$awn.alert(error.response.data.message)
       })
     },
-    getSuppliersForProject () {
+    getProjectSuppliers () {
       let self = this
       let projectId = this.selectedProject.projectId
-      axios.get(this.baseAPI + 'getProjectSupplier' + '/' + projectId).then(response => {
+      axios.get(this.baseAPI + 'getProjectSuppliers' + '/' + projectId).then(response => {
         let o = response.data
         console.log(o)
         self.projectSuppliers = o

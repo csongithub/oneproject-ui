@@ -1,6 +1,7 @@
 <template>
   <div class="commontableheader">
       <b-input-group v-if="actionable">
+        <!-- <span class="button" v-on:click="add()">{{addText}} <i :class="'fa fa-plus'"/></span> -->
         <b-button v-if="enableAdd" class="b-button btn-sm"  size="sm" variant="success" v-on:click="add()">{{addText}} <i :class="'fa fa-plus'"/></b-button>
         <b-button v-if="enableRefresh" class="b-button mb-0 ml-1" size="sm" variant="success" v-on:click="refresh()">{{refreshText}} <i :class="'fa fa-refresh'"/></b-button>
         <b-input-group-append v-if="enableSearch">
@@ -134,5 +135,16 @@ export default {
 <style scoped>
 .b-table {
   font-size: 80%;
+}
+.button {
+  color: black;
+  cursor: pointer;
+  background-color: lightgreen;
+  padding-left: 3px;
+  padding-right: 3px;
+  padding-bottom: 2px;
+  border-radius: 4px;
+  color: white;
+  font-size: 15px;
 }
 </style>
