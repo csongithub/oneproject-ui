@@ -47,7 +47,7 @@ export default {
 
 <style scoped lang="css">
 #app{
-  cursor: pointer; font-size: 30px; font-weight: bold;
+  cursor: pointer; font-size: 30px; font-family: 'Bauhaus 93';
 }
 #logout_text{
   cursor: pointer; font-size: 12px; color: blue;

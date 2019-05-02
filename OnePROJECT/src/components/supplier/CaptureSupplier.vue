@@ -27,11 +27,9 @@
             </b-row>
             <b-row>
               <b-col>
-                <b-form-group id="material" label="Slecte Materials:" label-for="gender" title="Represents gender of individual">
+                <b-form-group id="material" label="Slecte Materials:" label-for="material" title="Represents supplier's materials">
                   <multiselect v-model="supplier.materialsArray" :options="materialTypes.map(a => a.name)" :multiple="true" placeholder="Select materials">
                   </multiselect>
-                  <!-- <b-form-select class="b-form-select" v-model="supplier.material" :options="materialTypes.map(a => a.name)" size="sm">
-                  </b-form-select> -->
                 </b-form-group>
               </b-col>
             </b-row>

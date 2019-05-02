@@ -90,7 +90,7 @@
             </b-form-group>
           </b-col>
           <b-col>
-            <b-form-group v-if="showSalaryInput" :state=false  :invalid-feedback="'invalidFeedback'" class="b-form-group" id="salaryAmount" label="Enter Amount(In INR):" label-for="salaryAmount" title="Represents salary amount to be paid">
+            <b-form-group v-if="showSalaryInput" class="b-form-group" id="salaryAmount" label="Enter Amount(In INR):" label-for="salaryAmount" title="Represents salary amount to be paid">
               <b-form-input size="sm" :state=false class="b-form-input mt-2" id="salaryAmount" type="text" v-model="payment.salaryAmount" required placeholder="Enter Amount"/>
             </b-form-group>
             <b-form-group v-else-if="showDuesInput" class="b-form-group" id="duesPayment" label="Enter Amount(In INR):" label-for="duesPayment" title="Represents dues payment amount to be paid">
@@ -205,10 +205,7 @@ export default {
     },
     showPaymentHistory: function () {
       if (this.showPaymentHistory) {
-        this.showHideHistorytext = 'Hide Payment History'
         this.getIndividualPayments()
-      } else {
-        this.showHideHistorytext = 'Show Payment History'
       }
     }
   },
@@ -296,7 +293,7 @@ export default {
       },
       errorMessage: '',
       showPaymentHistory: false,
-      showHideHistorytext: 'Show Payment History',
+      showHideHistorytext: 'Payment History',
       payments: [],
       totalSalary: 0,
       totalDuesSalary: 0,
