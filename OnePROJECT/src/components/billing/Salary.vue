@@ -62,7 +62,7 @@
 
 <script>
 import axios from 'axios'
-import {config} from '../../main.js'
+import {config} from '../../config.js'
 import DatePicker from 'vue2-datepicker'
 // import { required } from 'vuelidate/lib/validators'
 import ResultTable from '../common/ResultTable'

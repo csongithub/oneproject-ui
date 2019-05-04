@@ -75,9 +75,3 @@ new Vue({
   },
   template: '<App/>'
 })
-
-export const config = new Vue({
-  data: {
-    SERVER_URL: 'http://localhost:8001/'
-  }
-})

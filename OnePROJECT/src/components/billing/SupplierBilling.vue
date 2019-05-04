@@ -143,6 +143,7 @@
           </b-row>
           <b-row>
             <b-col>
+              <label class="float-left" v-if="validate.errorMessage" style="color: red;">{{validate.errorMessage}}</label>
               <span class="button float-right" v-on:click="makePayment">Make Payment</span>
             </b-col>
           </b-row>
@@ -440,7 +441,12 @@ export default {
       }
       if (bill.reason === this.reasons[0].name) {
         if (this.validate.billAmount && this.validate.paidAmount && this.validate.mode && this.validate.paymentDate && this.validate.material) {
-          return true
+          if (bill.paidAmount > bill.billAmount) {
+            this.validate.errorMessage = 'Payment amount can not be greater then bill amount.'
+            return false
+          } else {
+            return true
+          }
         } else {
           return false
         }
@@ -480,7 +486,7 @@ export default {
   padding-left: 3px;
   padding-right: 3px;
   padding-bottom: 2px;
-  border-radius: 4px;
+  /* border-radius: 4px; */
   color: white;
 }
 

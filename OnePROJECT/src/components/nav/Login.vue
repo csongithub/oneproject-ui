@@ -31,7 +31,6 @@
 <script>
 import axios from 'axios'
 import Vue from 'vue'
-// import {config} from '../../main.js'
 import {config} from '../../config.js'
 export default {
   name: 'Login',

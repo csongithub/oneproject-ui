@@ -154,7 +154,7 @@
 import Vue from 'vue'
 import axios from 'axios'
 import ResultTable from '../common/ResultTable'
-import {config} from '../../main.js'
+import {config} from '../../config.js'
 export default {
   name: 'Individuals',
   components: {

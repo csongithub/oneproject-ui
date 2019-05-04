@@ -131,6 +131,12 @@ export default {
               icon: 'fa fa-users',
               name: 'SupplierBilling',
               path: '/supplierbilling'
+            },
+            {
+              title: 'Other',
+              icon: 'fa fa-inr',
+              name: 'OtherBilling',
+              path: '/otherbilling'
             }
           ]
         },

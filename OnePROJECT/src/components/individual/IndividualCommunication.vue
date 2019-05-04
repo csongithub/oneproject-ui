@@ -10,7 +10,7 @@
 
 <script>
 import axios from 'axios'
-import {config} from '../../main.js'
+import {config} from '../../config.js'
 import ResultTable from '../common/ResultTable'
 export default {
   name: 'IndividualsComunication',

@@ -20,6 +20,7 @@ import CaptureSupplier from '../components/supplier/CaptureSupplier'
 
 import IndividualBilling from '../components/billing/IndividualBilling'
 import SupplierBilling from '../components/billing/SupplierBilling'
+import OtherBilling from '../components/billing/OtherBilling'
 
 import Tooling from '../components/tooling/Tooling'
 
@@ -96,6 +97,11 @@ export default new Router({
       path: '/supplierbilling',
       name: 'SupplierBilling',
       component: SupplierBilling
+    },
+    {
+      path: '/otherbilling',
+      name: 'OtherBilling',
+      component: OtherBilling
     },
     {
       path: '/tooling',

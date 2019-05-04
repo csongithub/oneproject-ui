@@ -173,7 +173,7 @@ import Vue from 'vue'
 import axios from 'axios'
 import DatePicker from 'vue2-datepicker'
 import ResultTable from '../common/ResultTable'
-import {config} from '../../main.js'
+import {config} from '../../config.js'
 export default {
   name: 'Individuals',
   components: {

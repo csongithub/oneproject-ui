@@ -152,7 +152,7 @@
 
 <script>
 import axios from 'axios'
-import {config} from '../../main.js'
+import {config} from '../../config.js'
 import ResultTable from '../common/ResultTable'
 import DatePicker from 'vue2-datepicker'
 export default {
