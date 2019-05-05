@@ -4,7 +4,7 @@
       <login @login="getLoginStatus" />
     </div>
     <div v-if="authenticated" class="container-fluid" :style="'min-height: 100vh'">
-      <custom-header :user="user" @logout="logout"/>
+      <custom-header :user="user" :clientName="clientName" @logout="logout"/>
       <div id="app">
         <section class="app-main">
           <nav-bar/>
@@ -32,6 +32,7 @@ export default {
   data () {
     return {
       clientId: 0,
+      clientName: '',
       user: '',
       authenticated: false
     }
@@ -41,6 +42,7 @@ export default {
       if (obj.status) {
         this.authenticated = true
         this.clientId = obj.clientId
+        this.clientName = obj.clientName
         this.user = obj.user
       }
     },

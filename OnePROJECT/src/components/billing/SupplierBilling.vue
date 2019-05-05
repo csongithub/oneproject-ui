@@ -19,9 +19,10 @@
     </b-card>
     <b-card class="float-right mr-5"  style="height: 30vh; width: 40%;" header="Billing Summary">
       <table v-if="selectedProject && selectedSupplier">
-        <tr><td align="right"><h6>Billing Amount:</h6></td><td>{{' INR  '}}{{supplierBillingSummary.totalBillingAmount | numFormat('0.00')}}</td></tr>
-        <tr><td align="right"><h6>Paid Amount:</h6></td><td>{{'  INR  '}}{{supplierBillingSummary.totalPaymentAmount | numFormat('0.00')}}</td></tr>
-        <tr><td align="right"><h6>Due Amount:</h6></td><td>{{'  INR  '}}{{supplierBillingSummary.totalDueAmount | numFormat('0.00')}}</td></tr>
+        <tr><td align="right"><h6>Billing Amount:</h6></td><td><i class="fa fa-inr"/>{{' '}}{{supplierBillingSummary.totalBillingAmount | numFormat('0.00')}}</td><td>{{' ' + supplierBillingSummary.billingPercentage + '%'}}</td></tr>
+        <tr><td align="right"><h6>Paid Amount:</h6></td><td><i class="fa fa-inr"/>{{' '}}{{supplierBillingSummary.totalPaymentAmount | numFormat('0.00')}}</td><td>{{' ' + supplierBillingSummary.paymentPercentage + '%'}}</td></tr>
+        <tr><td align="right"><h6>Due Amount:</h6></td><td><i class="fa fa-inr"/>{{' '}}{{supplierBillingSummary.totalDueAmount | numFormat('0.00')}}</td><td>{{' ' + supplierBillingSummary.duePercentage + '%'}}</td></tr>
+        <tr><td align="right"><h6>Advance Amount:</h6></td><td><i class="fa fa-inr"/>{{' '}}{{supplierBillingSummary.totalAdvanceAmount | numFormat('0.00')}}</td>{{' ' + supplierBillingSummary.advPercentage + '%'}}<td></td></tr>
       </table>
       <p v-if="!selectedProject || !selectedSupplier" class="mt-5" style="margin-left: 30%; color: lightgray;">Please Select projetc and supplier</p>
     </b-card>
@@ -48,19 +49,22 @@
             </b-row>
             <b-row>
               <b-col>
-                <label><b>Billing Amount:</b> {{'INR '}}{{supplierBillingSummary.totalBillingAmount | numFormat('0.00')}}</label>
+                <label><b>Billing Amount:</b><i class="fa fa-inr"/>{{' '}}{{supplierBillingSummary.totalBillingAmount | numFormat('0.00')}}</label>
               </b-col>
               <b-col>
                 <b-form-group>
-                  <label><b>Paid Amount:</b> {{'INR '}} {{ supplierBillingSummary.totalPaymentAmount | numFormat('0.00')}}</label>
+                  <label><b>Paid Amount:</b><i class="fa fa-inr"/>{{' '}}{{ supplierBillingSummary.totalPaymentAmount | numFormat('0.00')}}</label>
                 </b-form-group>
               </b-col>
               <b-col>
                 <b-form-group>
-                  <label><b>Due Amount:</b>  {{'INR '}} {{supplierBillingSummary.totalDueAmount | numFormat('0.00')}}</label>
+                  <label><b>Due Amount:</b><i class="fa fa-inr"/>{{' '}}{{supplierBillingSummary.totalDueAmount | numFormat('0.00')}}</label>
                 </b-form-group>
               </b-col>
               <b-col>
+                <b-form-group>
+                  <label><b>Advance Amount:</b><i class="fa fa-inr"/>{{' '}}{{supplierBillingSummary.totalAdvanceAmount | numFormat('0.00')}}</label>
+                </b-form-group>
               </b-col>
             </b-row>
             <div>
@@ -123,7 +127,7 @@
             </b-col>
             <b-col>
               <b-form-group class="b-form-group" id="quantity" label="Enter Quantity of Material(s):" label-for="quantity" title="Represents quantity of material purchaged.">
-                <b-form-input size="sm" class="b-form-input mt-2" id="billAmount" type="text" v-model="supplierBill.quantity" required placeholder="i.e 15KG or 50 Liters or 100 Bags "/>
+                <b-form-input :state="validate.quantity" size="sm" class="b-form-input mt-2" id="billAmount" type="text" v-model="supplierBill.quantity" required placeholder="i.e 15KG or 50 Liters or 100 Bags "/>
               </b-form-group>
             </b-col>
             <b-col>
@@ -135,8 +139,8 @@
           </b-row>
           <b-row>
             <b-col>
-              <b-form-group class="b-form-group" id="remark" label="Comment:" label-for="remark" title="Represents remark for payment">
-                <b-form-textarea id="textarea" v-model="supplierBill.comment" placeholder="Your comments here..." rows="2" max-rows="3"></b-form-textarea>
+              <b-form-group :state="validate.comment" :invalid-feedback="'Write some comment.'"  class="b-form-group" id="remark" label="Comment:" label-for="remark" title="Represents remark for payment">
+                <b-form-textarea :state="validate.comment" id="textarea" v-model="supplierBill.comment" placeholder="Your comments here..." rows="2" max-rows="3"></b-form-textarea>
               </b-form-group>
             </b-col>
             <b-col></b-col>
@@ -171,13 +175,66 @@
           </b-row>
           <b-row>
             <b-col>
-              <b-form-group class="b-form-group" id="remark" label="Comment:" label-for="remark" title="Represents remark for payment">
-                <b-form-textarea id="textarea" v-model="supplierBill.comment" placeholder="Your comments here..." rows="2" max-rows="3"></b-form-textarea>
+              <b-form-group :state="validate.comment" invalid-feedback="Write some comment." class="b-form-group" id="remark" label="Comment:" label-for="remark" title="Represents remark for payment">
+                <b-form-textarea :state="validate.comment" id="textarea" v-model="supplierBill.comment" placeholder="Your comments here..." rows="2" max-rows="3"></b-form-textarea>
               </b-form-group>
             </b-col>
             <b-col>
               <b-form-group class="b-form-group" id="dueAmount" label="Remainig Due Amount(in INR):" label-for="dueAmount" title="Represents due bill amount.">
                <label>{{'INR '}}{{supplierBillingSummary.totalDueAmount - supplierBill.paidAmount | numFormat('0.00')}}</label>
+              </b-form-group>
+            </b-col>
+            <b-col></b-col>
+            <b-col></b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <label class="float-left" v-if="validate.errorMessage" style="color: red;">{{validate.errorMessage}}</label>
+              <span class="button float-right" v-on:click="makePayment">Make Payment</span>
+            </b-col>
+          </b-row>
+        </div>
+
+        <div v-if="supplierBill.reason === reasons[2].name">
+          <b-row>
+            <b-col>
+              <b-form-group :state="validate.paidAmount" :invalid-feedback="'Enter payment amount'" class="b-form-group" id="paidAmount" label="Enter Payment Amount(In INR):" label-for="paidAmount" title="Represents advance amount to be paid.">
+                <b-form-input :state="validate.paidAmount" size="sm" class="b-form-input mt-2" id="paidAmount" type="text" v-model="supplierBill.paidAmount" required placeholder="Enter Payment Amount"/>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group :state="validate.mode" :invalid-feedback="'Please select payment mode.'" id="mode" label="Payment Mode:" label-for="mode" title="Represents mode of payment.">
+                <b-form-select :state="validate.mode" class = "b-form-select" v-model="supplierBill.mode" :options="modes.map(a=>a.name)" size="sm">
+                  <option slot="first" :value="null">Choose</option>
+                </b-form-select>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group :state="validate.paymentDate" :invalid-feedback="'Please select payment date.'" class = "date-picker"  id="paymentDate" label="Payment Date:" label-for="paymentDate" title="Represents date of payment.">
+                <date-picker class = "date-picker" v-model="supplierBill.paymentDate" :lang="'en'" :format="'DD-MM-YYYY'"></date-picker>
+              </b-form-group>
+            </b-col>
+            <b-col></b-col>
+          </b-row>
+          <b-row>
+             <b-col>
+              <b-form-group :state="validate.material" :invalid-feedback="'Select Material(s).'" id="material" label="Slecte Material(s):" label-for="material" title="Represents purchached material.">
+                <multiselect v-model="supplierBill.materialsArray" :options="matterialArray" :multiple="true" placeholder="Select material(s)">
+                </multiselect>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group class="b-form-group" id="quantity" label="Enter Quantity of Material(s):" label-for="quantity" title="Represents quantity of material purchaged.">
+                <b-form-input :state="validate.quantity" size="sm" class="b-form-input mt-2" id="billAmount" type="text" v-model="supplierBill.quantity" required placeholder="i.e 15KG or 50 Liters or 100 Bags "/>
+              </b-form-group>
+            </b-col>
+            <b-col></b-col>
+            <b-col></b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <b-form-group :state="validate.comment" invalid-feedback="Write some comment." class="b-form-group" id="remark" label="Comment:" label-for="remark" title="Represents remark for payment">
+                <b-form-textarea :state="validate.comment" id="textarea" v-model="supplierBill.comment" placeholder="Your comments here..." rows="2" max-rows="3"></b-form-textarea>
               </b-form-group>
             </b-col>
             <b-col></b-col>
@@ -222,7 +279,7 @@ export default {
       modes: [{'name': 'Cash'}, {'name': 'Card'}, {'name': 'Cheque'}, {'name': 'Account Transfer'}],
       supplierBill: this.getNewBill(),
       matterialArray: [],
-      supplierBillingSummary: {'totalBillingAmount': 0.0, 'totalPaymentAmount': 0.0, 'totalDueAmount': 0.0},
+      supplierBillingSummary: {'totalBillingAmount': 0.0, 'totalPaymentAmount': 0.0, 'totalDueAmount': 0.0, 'totalAdvanceAmount': 0.0},
       showPaymentHistory: false,
       showHideHistorytext: 'Payment History',
       billFields: {
@@ -314,6 +371,8 @@ export default {
         mode: true,
         paymentDate: true,
         material: true,
+        quantity: true,
+        comment: true,
         errorMessage: null
       }
     },
@@ -414,33 +473,38 @@ export default {
       this.validate = this.initiateValidateData()
     },
     validatePayment: function (bill) {
-      if (bill.billAmount === '' || bill.billAmount === null || bill.billAmount === 0) {
-        this.validate.billAmount = false
-      } else {
-        this.validate.billAmount = true
-      }
-      if (bill.paidAmount === '' || bill.paidAmount === null || bill.paidAmount === 0) {
-        this.validate.paidAmount = false
-      } else {
-        this.validate.paidAmount = true
-      }
-      if (bill.mode === '' || bill.mode === null || bill.mode === '') {
-        this.validate.mode = false
-      } else {
-        this.validate.mode = true
-      }
-      if (bill.paymentDate === 'undefined' || bill.paymentDate === null || bill.paymentDate === '') {
-        this.validate.paymentDate = false
-      } else {
-        this.validate.paymentDate = true
-      }
-      if (bill.materials === undefined || bill.materials === null || bill.materials === '') {
-        this.validate.material = false
-      } else {
-        this.validate.material = true
-      }
       if (bill.reason === this.reasons[0].name) {
-        if (this.validate.billAmount && this.validate.paidAmount && this.validate.mode && this.validate.paymentDate && this.validate.material) {
+        if (bill.billAmount === '' || bill.billAmount === null || bill.billAmount === 0) {
+          this.validate.billAmount = false
+        } else {
+          this.validate.billAmount = true
+        }
+        if (bill.paidAmount === '' || bill.paidAmount === null) {
+          bill.paidAmount = 0
+        } else {
+          this.validate.paidAmount = true
+        }
+        if (bill.mode === '' || bill.mode === null || bill.mode === '') {
+          this.validate.mode = false
+        } else {
+          this.validate.mode = true
+        }
+        if (bill.paymentDate === 'undefined' || bill.paymentDate === null || bill.paymentDate === '') {
+          this.validate.paymentDate = false
+        } else {
+          this.validate.paymentDate = true
+        }
+        if (bill.materials === undefined || bill.materials === null || bill.materials === '') {
+          this.validate.material = false
+        } else {
+          this.validate.material = true
+        }
+        if (bill.comment === '' || bill.comment === null || bill.comment === 0) {
+          this.validate.comment = false
+        } else {
+          this.validate.comment = true
+        }
+        if (this.validate.billAmount && this.validate.paidAmount && this.validate.mode && this.validate.paymentDate && this.validate.material && this.validate.comment) {
           if (bill.paidAmount > bill.billAmount) {
             this.validate.errorMessage = 'Payment amount can not be greater then bill amount.'
             return false
@@ -451,7 +515,27 @@ export default {
           return false
         }
       } else if (bill.reason === this.reasons[1].name) {
-        if (this.validate.paidAmount && this.validate.mode && this.validate.paymentDate) {
+        if (bill.paidAmount === '' || bill.paidAmount === null || bill.paidAmount === 0) {
+          this.validate.paidAmount = false
+        } else {
+          this.validate.paidAmount = true
+        }
+        if (bill.mode === '' || bill.mode === null || bill.mode === '') {
+          this.validate.mode = false
+        } else {
+          this.validate.mode = true
+        }
+        if (bill.paymentDate === 'undefined' || bill.paymentDate === null || bill.paymentDate === '') {
+          this.validate.paymentDate = false
+        } else {
+          this.validate.paymentDate = true
+        }
+        if (bill.comment === '' || bill.comment === null || bill.comment === 0) {
+          this.validate.comment = false
+        } else {
+          this.validate.comment = true
+        }
+        if (this.validate.paidAmount && this.validate.mode && this.validate.paymentDate && this.validate.comment) {
           if (this.supplierBillingSummary.totalDueAmount === 0.0) {
             this.validate.errorMessage = 'No Due amount is there for selected supplier and project.'
             return false
@@ -460,6 +544,41 @@ export default {
             return false
           } else {
             return true
+          }
+        } else {
+          return false
+        }
+      } else if (bill.reason === this.reasons[2].name) {
+        if (bill.paidAmount === '' || bill.paidAmount === null || bill.paidAmount === 0) {
+          this.validate.paidAmount = false
+        } else {
+          this.validate.paidAmount = true
+        }
+        if (bill.mode === '' || bill.mode === null || bill.mode === '') {
+          this.validate.mode = false
+        } else {
+          this.validate.mode = true
+        }
+        if (bill.paymentDate === 'undefined' || bill.paymentDate === null || bill.paymentDate === '') {
+          this.validate.paymentDate = false
+        } else {
+          this.validate.paymentDate = true
+        }
+        if (bill.comment === '' || bill.comment === null || bill.comment === 0) {
+          this.validate.comment = false
+        } else {
+          this.validate.comment = true
+        }
+        if (this.validate.paidAmount && this.validate.mode && this.validate.paymentDate && this.validate.comment) {
+          if (this.supplierBillingSummary.totalDueAmount === 0) {
+            return true
+          } else if (this.supplierBillingSummary.totalDueAmount >= 0) {
+            if (bill.paidAmount <= this.supplierBillingSummary.totalDueAmount) {
+              this.validate.errorMessage = 'Advance amount can not be less or equal than due amount'
+              return false
+            } else {
+              return true
+            }
           }
         } else {
           return false
