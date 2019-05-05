@@ -132,7 +132,7 @@
             </b-col>
             <b-col>
               <b-form-group class="b-form-group" id="dueAmount" label="Due Amount(in INR):" label-for="dueAmount" title="Represents due bill amount.">
-               <label>{{'INR '}}{{supplierBill.dueAmount |numFormat('0.00')}}</label>
+               <label><i class="fa fa-inr"/>{{' '}}{{supplierBill.dueAmount |numFormat('0.00')}}</label>
               </b-form-group>
             </b-col>
             <b-col></b-col>
@@ -181,7 +181,7 @@
             </b-col>
             <b-col>
               <b-form-group class="b-form-group" id="dueAmount" label="Remainig Due Amount(in INR):" label-for="dueAmount" title="Represents due bill amount.">
-               <label>{{'INR '}}{{supplierBillingSummary.totalDueAmount - supplierBill.paidAmount | numFormat('0.00')}}</label>
+               <label><i class="fa fa-inr"/>{{' '}}{{supplierBillingSummary.totalDueAmount - supplierBill.paidAmount | numFormat('0.00')}}</label>
               </b-form-group>
             </b-col>
             <b-col></b-col>
