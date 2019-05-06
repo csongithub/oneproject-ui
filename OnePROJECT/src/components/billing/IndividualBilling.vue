@@ -45,19 +45,16 @@
             </b-row>
             <b-row>
               <b-col>
-                <label><b>Income:</b> <i class="fa fa-inr"/>{{' '}}{{paymentSummary.totalPaymentAmount | numFormat('0.00')}}</label>
+                <label><b>Earnings:</b> <i class="fa fa-inr"/>{{' '}}{{paymentSummary.totalPaymentAmount | numFormat('0.00')}}</label>
               </b-col>
               <b-col>
-                <label><b>Paid:</b> <i class="fa fa-inr"/>{{' '}}{{paymentSummary.totalPaidAmount | numFormat('0.00')}}</label>
+                <label><b>Payments:</b> <i class="fa fa-inr"/>{{' '}}{{paymentSummary.totalPaidAmount | numFormat('0.00')}}</label>
               </b-col>
               <b-col>
                   <label><b>Dues:</b> <i class="fa fa-inr"/>{{' '}}{{ paymentSummary.totalDueAmount | numFormat('0.00')}}</label>
               </b-col>
               <b-col>
                   <label><b>Advance:</b> <i class="fa fa-inr"/>{{' '}}{{paymentSummary.totalAdvanceAmount | numFormat('0.00')}}</label>
-              </b-col>
-              <b-col>
-                  <label><b>Other Payment:</b> <i class="fa fa-inr"/>{{' '}}{{paymentSummary.totalOtherExpensePaid | numFormat('0.00')}}</label>
               </b-col>
             </b-row>
             <div>
@@ -143,7 +140,7 @@
             </b-col>
           </b-row>
         </div>
-        <div v-if="payment.reason === reasons[1].name">
+        <div v-if="payment.reason === reasons[1].name || payment.reason === reasons[2].name">
           <b-row>
             <b-col>
               <b-form-group :state="validate.paidAmount" :invalid-feedback="'Enter payment amount.'"  class="b-form-group" id="paidAmount" label="Enter Payment Amount(In INR):" label-for="paidAmount" title="Represents actual amount to be paid.">
@@ -182,8 +179,13 @@
         <div v-if="payment.reason === reasons[3].name">
           <b-row>
             <b-col>
-              <b-form-group :state="validate.otherExpense" :invalid-feedback="'Enter payment amount.'"  class="b-form-group" id="paidAmount" label="Enter Payment Amount(In INR):" label-for="paidAmount" title="Represents actual amount to be paid.">
-                <b-form-input :state="validate.otherExpense"  :disabled="disabled" size="sm" class="b-form-input mt-2" id="paidAmount" type="text" v-model="payment.otherExpense" required placeholder="Enter Payment Amount"/>
+              <b-form-group :state="validate.salaryAmount" :invalid-feedback="'Enter Expense amount'"  class="b-form-group" id="salaryAmount" label="Expense Amount (In INR):" label-for="salaryAmount" title="Represents actual amount to be paid.">
+                <b-form-input :state="validate.salaryAmount"  :disabled="disabled" size="sm" class="b-form-input mt-2" id="salaryAmount" type="text" v-model="payment.salaryAmount" required placeholder="Enter Expense Amount"/>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group :state="validate.paidAmount" :invalid-feedback="'Enter payment amount.'"  class="b-form-group" id="paidAmount" label="Payment Amount(In INR):" label-for="paidAmount" title="Represents actual amount to be paid.">
+                <b-form-input :state="validate.paidAmount"  :disabled="disabled" size="sm" class="b-form-input mt-2" id="paidAmount" type="text" v-model="payment.paidAmount" required placeholder="Enter Payment Amount"/>
               </b-form-group>
             </b-col>
             <b-col>
@@ -205,7 +207,11 @@
                 <b-form-textarea :state="validate.remark"  id="textarea" v-model="payment.remark" placeholder="Your comments here..." rows="2" max-rows="3"></b-form-textarea>
               </b-form-group>
             </b-col>
-            <b-col></b-col>
+            <b-col>
+              <b-form-group class="b-form-group" id="dueAmount" label="Remainig Due Amount(in INR):" label-for="dueAmount" title="Represents due bill amount.">
+               <label><i class="fa fa-inr"/>{{' '}}{{payment.dueAmount | numFormat('0.00')}}</label>
+              </b-form-group>
+            </b-col>
             <b-col></b-col>
           </b-row>
           <b-row>
@@ -238,16 +244,17 @@ export default {
       if (value === this.reasons[0].name) {
         this.payment.salaryAmount = this.salary.salary
         this.payment.paidAmount = this.salary.salary
-        this.payment.otherExpense = 0
       } else if (value === this.reasons[1].name) {
         this.payment.salaryAmount = 0
         this.payment.paidAmount = 0
         this.payment.dueAmount = 0
-        this.payment.otherExpense = 0
+      } else if (value === this.reasons[2].name) {
+        this.payment.salaryAmount = 0
+        this.payment.paidAmount = 0
+        this.payment.dueAmount = 0
       } else if (value === this.reasons[3].name) {
         this.payment.salaryAmount = 0
         this.payment.paidAmount = 0
-        this.payment.otherExpense = 0
         this.payment.dueAmount = 0
       }
     },
@@ -256,6 +263,13 @@ export default {
         this.payment.dueAmount = this.salary.salary - value
       } else if (this.payment.reason === this.reasons[1].name) {
         this.payment.dueAmount = 0
+      } else if (this.payment.reason === this.reasons[3].name) {
+        this.payment.dueAmount = this.payment.salaryAmount - this.payment.paidAmount
+      }
+    },
+    'payment.salaryAmount': function (value) {
+      if (this.payment.reason === this.reasons[3].name) {
+        this.payment.dueAmount = this.payment.salaryAmount - this.payment.paidAmount
       }
     },
     'payment.status': function (value) {
@@ -306,7 +320,7 @@ export default {
       payment: this.getNewPymentObject(),
       paymentSummary: this.getNewPaymentSummary(),
       reasons: [
-        {'name': 'Monthly Salary'}, {'name': 'Advance Payment'}, {'name': 'Dues Payment'}, {'name': 'Other'}
+        {'name': 'Monthly Salary'}, {'name': 'Advance Payment'}, {'name': 'Dues Payment'}, {'name': 'Other Expense'}
       ],
       modes: [{'name': 'Cash'}, {'name': 'Cheque'}, {'name': 'Account Transfer'}],
       months: [
@@ -365,6 +379,7 @@ export default {
     initiateValidateData: function () {
       return {
         errorMessage: null,
+        salaryAmount: true,
         paidAmount: true,
         otherExpense: true,
         mode: true,
@@ -452,6 +467,10 @@ export default {
           let reason = this.payment.reason
           this.payment = this.getNewPymentObject()
           this.payment.reason = reason
+          if (reason === this.reasons[0].name) {
+            this.payment.salaryAmount = this.salary.salary
+          }
+          this.validate = this.initiateValidateData()
           self.$awn.success('Payment Done')
         }).catch(error => {
           self.$awn.alert(error.response.data.message)
@@ -535,16 +554,11 @@ export default {
           }
           return false
         }
-      } else if (payment.reason === this.reasons[1].name || payment.reason === this.reasons[3].name) {
+      } else if (payment.reason === this.reasons[1].name || payment.reason === this.reasons[2].name) {
         if (payment.paidAmount === null || payment.paidAmount === undefined || payment.paidAmount === 0 || payment.paidAmount === '') {
           this.validate.paidAmount = false
         } else {
           this.validate.paidAmount = true
-        }
-        if (payment.otherExpense === null || payment.otherExpense === undefined || payment.otherExpense === 0 || payment.otherExpense === '') {
-          this.validate.otherExpense = false
-        } else {
-          this.validate.otherExpense = true
         }
         if (payment.mode === null || payment.mode === undefined || payment.mode === '') {
           this.validate.mode = false
@@ -561,15 +575,54 @@ export default {
         } else {
           this.validate.remark = true
         }
-        if ((this.validate.paidAmount || this.validate.otherExpense) && this.validate.mode && this.validate.paymentDate && this.validate.remark) {
-          if (this.validate.paidAmount) {
+        if (this.validate.paidAmount && this.validate.mode && this.validate.paymentDate && this.validate.remark) {
+          if (payment.reason === this.reasons[1].name) {
             if (payment.paidAmount <= this.paymentSummary.totalDueAmount) {
               this.validate.errorMessage = 'Advance amount can not be less than due amount.'
               return false
             } else {
               return true
             }
-          } else if (this.validate.otherExpense) {
+          } else if (payment.reason === this.reasons[2].name) {
+            if (payment.paidAmount > this.paymentSummary.totalDueAmount) {
+              this.validate.errorMessage = 'Payment amount can not be greater than total dues amount.'
+              return false
+            } else {
+              return true
+            }
+          }
+        }
+      } else if (payment.reason === this.reasons[3].name) {
+        if (payment.salaryAmount === null || payment.salaryAmount === undefined || payment.salaryAmount === 0 || payment.salaryAmount === '') {
+          this.validate.salaryAmount = false
+        } else {
+          this.validate.salaryAmount = true
+        }
+        if (payment.paidAmount === null || payment.paidAmount === undefined || payment.paidAmount === 0 || payment.paidAmount === '') {
+          this.validate.paidAmount = false
+        } else {
+          this.validate.paidAmount = true
+        }
+        if (payment.mode === null || payment.mode === undefined || payment.mode === '') {
+          this.validate.mode = false
+        } else {
+          this.validate.mode = true
+        }
+        if (payment.paymentDate === null || payment.paymentDate === undefined || payment.paymentDate === '') {
+          this.validate.paymentDate = false
+        } else {
+          this.validate.paymentDate = true
+        }
+        if (payment.remark === null || payment.remark === undefined || payment.remark === '') {
+          this.validate.remark = false
+        } else {
+          this.validate.remark = true
+        }
+        if (this.validate.salaryAmount && this.validate.paidAmount && this.validate.mode && this.validate.paymentDate && this.validate.remark) {
+          if (payment.paidAmount > payment.salaryAmount) {
+            this.validate.errorMessage = 'Payment amount can no be more than expense amount.'
+            return false
+          } else {
             return true
           }
         }
