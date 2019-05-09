@@ -22,7 +22,7 @@ import IndividualBilling from '../components/billing/IndividualBilling'
 import SupplierBilling from '../components/billing/SupplierBilling'
 import OtherBilling from '../components/billing/OtherBilling'
 
-import Tooling from '../components/tooling/Tooling'
+import CaptureMachine from '../components/tooling/CaptureMachine'
 
 Vue.use(Router)
 
@@ -104,9 +104,9 @@ export default new Router({
       component: OtherBilling
     },
     {
-      path: '/tooling',
-      name: 'Tooling',
-      component: Tooling
+      path: '/capturecachine',
+      name: 'CaptureMachine',
+      component: CaptureMachine
     }
   ]
 })

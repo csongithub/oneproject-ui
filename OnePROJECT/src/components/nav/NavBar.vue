@@ -146,9 +146,9 @@ export default {
           icon: 'fa fa-truck',
           subMenu: [
             {
-              title: 'Tooling',
-              icon: 'bars',
-              name: 'Tooling',
+              title: 'Capture Machine',
+              icon: 'fa fa-truck',
+              name: 'CaptureMachine',
               path: '/tooling'
             }
           ]
