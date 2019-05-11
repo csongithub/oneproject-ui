@@ -32,11 +32,13 @@
       <i class="fa fa-print float-right fa-1x" style="cursor: pointer; color:gray; padding:5px;" v-on:click="print">{{' ' + 'Print'}}</i>
       <div id="printable">
         <b-form>
-          <b-card header="Payment" bg-variant="light">
+          <b-card :header="'Billing Summary - ' + client" bg-variant="light">
             <b-row>
               <b-col>
                 <label><b>Project:</b> {{selectedProject.projectName}}</label>
               </b-col>
+            </b-row>
+            <b-row>
               <b-col>
                 <label><b>Supplier:</b> {{selectedSupplier.supplierName}}</label>
               </b-col>
@@ -46,6 +48,7 @@
               <b-col>
                 <label><b>Materials:</b> {{selectedSupplier.materials}}</label>
               </b-col>
+              <b-col></b-col>
             </b-row>
             <b-row>
               <b-col>
@@ -92,12 +95,38 @@
               </b-form-select>
             </b-form-group>
           </b-col>
+
         </b-row>
         <div v-if="supplierBill.reason === reasons[0].name">
           <b-row>
             <b-col>
+              <b-form-group class="b-form-group" id="rate" label="Check this if rate is known." label-for="rate" title="Represents weather rate is known or not.">
+                <b-form-checkbox id="checkbox-1" v-model="supplierBill.rateAvailable" name="checkbox-1" value="rated" unchecked-value="not_rated">
+                  Billing by rate.
+                </b-form-checkbox>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group :state="validate.rate" :invalid-feedback="'Enter material rate.'" class="b-form-group" id="rate" label="Enter Rate (Per Unit)" label-for="rate" title="Represents rate of material.">
+                <b-form-input :disabled="disabled" :state="validate.rate" size="sm" class="b-form-input mt-2" id="rate" type="text" v-model="supplierBill.rate" required placeholder="i.e 267.57"/>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group :state="validate.quantity" :invalid-feedback="'Enter material quantity.'" class="b-form-group" id="quantity" label="Enter Quantity of Material(s):" label-for="quantity" title="Represents quantity of material purchaged.">
+                <b-form-input :disabled="disabled" :state="validate.quantity" size="sm" class="b-form-input mt-2" id="billAmount" type="text" v-model="supplierBill.quantity" required placeholder="i.e 15KG or 50 Liters or 100 Bags "/>
+              </b-form-group>
+            </b-col>
+            <b-col></b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <b-form-group :state="validate.billingDate" :invalid-feedback="'Select billing date.'" class = "date-picker"  id="paymentDate" label="Billing Date:" label-for="billingDate" title="Represents date of billing.">
+                <date-picker class = "date-picker" v-model="supplierBill.billingDate" :lang="'en'" :format="'DD-MM-YYYY'"></date-picker>
+              </b-form-group>
+            </b-col>
+            <b-col>
               <b-form-group :state="validate.billAmount" :invalid-feedback="'Enter ailling amount.'" class="b-form-group" id="billAmount" label="Enter Bill Amount(In INR):" label-for="billAmount" title="Represents total amount of bill.">
-                <b-form-input :state="validate.billAmount" size="sm" class="b-form-input mt-2" id="billAmount" type="text" v-model="supplierBill.billAmount" required placeholder="Enter Bill Amount"/>
+                <b-form-input :disabled="!disabled" :state="validate.billAmount" size="sm" class="b-form-input mt-2" id="billAmount" type="text" v-model="supplierBill.billAmount" required placeholder="Enter Bill Amount"/>
               </b-form-group>
             </b-col>
             <b-col>
@@ -105,42 +134,38 @@
                 <b-form-input :state="validate.paidAmount" size="sm" class="b-form-input mt-2" id="paidAmount" type="text" v-model="supplierBill.paidAmount" required placeholder="Enter Payment Amount"/>
               </b-form-group>
             </b-col>
+            <b-col></b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <b-form-group :state="validate.paymentDate" :invalid-feedback="'Select payment date.'" class = "date-picker"  id="paymentDate" label="Payment Date:" label-for="paymentDate" title="Represents date of payment.">
+                <date-picker :disabled="validate.zeroPayment" class = "date-picker" v-model="supplierBill.paymentDate" :lang="'en'" :format="'DD-MM-YYYY'"></date-picker>
+              </b-form-group>
+            </b-col>
             <b-col>
               <b-form-group :state="validate.mode" :invalid-feedback="'Select payment mode.'" id="mode" label="Payment Mode:" label-for="mode" title="Represents mode of payment.">
-                <b-form-select :state="validate.mode" class = "b-form-select" v-model="supplierBill.mode" :options="modes.map(a=>a.name)" size="sm">
+                <b-form-select :disabled="validate.zeroPayment" :state="validate.mode" class = "b-form-select" v-model="supplierBill.mode" :options="modes.map(a=>a.name)" size="sm">
                   <option slot="first" :value="null">Choose</option>
                 </b-form-select>
               </b-form-group>
             </b-col>
-            <b-col>
-              <b-form-group :state="validate.paymentDate" :invalid-feedback="'Select payment date.'" class = "date-picker"  id="paymentDate" label="Payment Date:" label-for="paymentDate" title="Represents date of payment.">
-                <date-picker class = "date-picker" v-model="supplierBill.paymentDate" :lang="'en'" :format="'DD-MM-YYYY'"></date-picker>
-              </b-form-group>
-            </b-col>
-          </b-row>
-          <b-row>
             <b-col>
               <b-form-group :state="validate.material" :invalid-feedback="'Select Material(s).'" id="material" label="Slecte Material(s):" label-for="material" title="Represents purchached material.">
                 <multiselect v-model="supplierBill.materialsArray" :options="matterialArray" :multiple="true" placeholder="Select material(s)">
                 </multiselect>
               </b-form-group>
             </b-col>
+            <b-col></b-col>
+          </b-row>
+          <b-row>
             <b-col>
-              <b-form-group class="b-form-group" id="quantity" label="Enter Quantity of Material(s):" label-for="quantity" title="Represents quantity of material purchaged.">
-                <b-form-input :state="validate.quantity" size="sm" class="b-form-input mt-2" id="billAmount" type="text" v-model="supplierBill.quantity" required placeholder="i.e 15KG or 50 Liters or 100 Bags "/>
+              <b-form-group :state="validate.comment" :invalid-feedback="'Write some comment.'"  class="b-form-group" id="remark" label="Remark:" label-for="remark" title="Represents remark for payment">
+                <b-form-textarea :state="validate.comment" id="textarea" v-model="supplierBill.comment" placeholder="Your comments here..." rows="2" max-rows="3"></b-form-textarea>
               </b-form-group>
             </b-col>
             <b-col>
               <b-form-group class="b-form-group" id="dueAmount" label="Due Amount(in INR):" label-for="dueAmount" title="Represents due bill amount.">
                <label><i class="fa fa-inr"/>{{' '}}{{supplierBill.dueAmount |numFormat('0.00')}}</label>
-              </b-form-group>
-            </b-col>
-            <b-col></b-col>
-          </b-row>
-          <b-row>
-            <b-col>
-              <b-form-group :state="validate.comment" :invalid-feedback="'Write some comment.'"  class="b-form-group" id="remark" label="Comment:" label-for="remark" title="Represents remark for payment">
-                <b-form-textarea :state="validate.comment" id="textarea" v-model="supplierBill.comment" placeholder="Your comments here..." rows="2" max-rows="3"></b-form-textarea>
               </b-form-group>
             </b-col>
             <b-col></b-col>
@@ -194,7 +219,6 @@
             </b-col>
           </b-row>
         </div>
-
         <div v-if="supplierBill.reason === reasons[2].name">
           <b-row>
             <b-col>
@@ -270,12 +294,13 @@ export default {
       supplierAPI: config.SERVER_URL + 'SupplierEndPoint/',
       billingAPI: config.SERVER_URL + 'SupplierBillEndPoint/',
       clientId: 0,
+      client: null,
       allProjects: [],
       selectedProject: null,
       projectSuppliers: [],
       selectedSupplier: null,
       errMsg: null,
-      reasons: [{'name': 'Bill Payment'}, {'name': 'Due Payment'}, {'name': 'Advance Payment'}],
+      reasons: [{'name': 'New Bill'}, {'name': 'Due Payment'}, {'name': 'Advance Payment'}],
       modes: [{'name': 'Cash'}, {'name': 'Card'}, {'name': 'Cheque'}, {'name': 'Account Transfer'}],
       supplierBill: this.getNewBill(),
       matterialArray: [],
@@ -283,12 +308,16 @@ export default {
       showPaymentHistory: false,
       showHideHistorytext: 'Payment History',
       billFields: {
-        paymentDate: {
-          label: 'Payment Date',
-          sortable: true
-        },
         reason: {
           label: 'Reason',
+          sortable: true
+        },
+        billingDate: {
+          label: 'Billing Date',
+          sortable: true
+        },
+        paymentDate: {
+          label: 'Payment Date',
           sortable: true
         },
         billAmount: {
@@ -311,6 +340,10 @@ export default {
           label: 'Materials',
           sortable: false
         },
+        rate: {
+          label: 'Rate',
+          sortable: false
+        },
         quantity: {
           label: 'Quantity',
           sortable: false
@@ -321,12 +354,35 @@ export default {
         }
       },
       bills: [],
-      validate: this.initiateValidateData()
+      validate: this.initiateValidateData(),
+      disabled: false
     }
   },
   watch: {
-    'supplierBill.paidAmount': function () {
+    'supplierBill.rateAvailable': function (value) {
+      if (value === 'not_rated') {
+        this.disabled = true
+        this.supplierBill.rate = 0.0
+        this.supplierBill.quantity = 0.0
+        this.validate.rate = true
+        this.validate.quantity = true
+      } else if (value === 'rated') {
+        this.disabled = false
+      }
+    },
+    'supplierBill.rate': function (value) {
+      this.supplierBill.billAmount = this.supplierBill.rate * this.supplierBill.quantity
+    },
+    'supplierBill.quantity': function (value) {
+      this.supplierBill.billAmount = this.supplierBill.rate * this.supplierBill.quantity
+    },
+    'supplierBill.paidAmount': function (value) {
       if (this.supplierBill.reason === this.reasons[0].name) {
+        if (value > 0) {
+          this.validate.zeroPayment = false
+        } else {
+          this.validate.zeroPayment = true
+        }
         this.supplierBill.dueAmount = this.supplierBill.billAmount - this.supplierBill.paidAmount
       }
     },
@@ -341,6 +397,7 @@ export default {
       }
     },
     'supplierBill.reason': function (reason) {
+      this.validate.zeroPayment = true
       this.validate = this.initiateValidateData()
       this.supplierBill = this.getNewBill()
       this.supplierBill.reason = reason
@@ -357,11 +414,14 @@ export default {
         paidAmount: 0.0,
         dueAmount: 0.0,
         paymentDate: null,
+        billingDate: null,
         materialsArray: [],
         materials: null,
         comment: null,
         mode: null,
-        quantity: null
+        quantity: null,
+        rate: 0.0,
+        rateAvailable: 'rated'
       }
     },
     initiateValidateData: function () {
@@ -372,8 +432,10 @@ export default {
         paymentDate: true,
         material: true,
         quantity: true,
+        rate: true,
         comment: true,
-        errorMessage: null
+        errorMessage: null,
+        zeroPayment: true
       }
     },
     getSummarizedProjectsForClient () {
@@ -457,8 +519,6 @@ export default {
       Vue.set(this.supplierBill, 'projectId', this.selectedProject.projectId)
       if (this.validatePayment(this.supplierBill)) {
         axios.post(this.billingAPI + 'addBill', this.supplierBill).then(response => {
-          // let o = response.data
-          // this.bills = o
           this.postPayment()
           self.$awn.success('Payment Done')
         }).catch(error => {
@@ -474,46 +534,30 @@ export default {
     },
     validatePayment: function (bill) {
       if (bill.reason === this.reasons[0].name) {
-        if (bill.billAmount === '' || bill.billAmount === null || bill.billAmount === 0) {
-          this.validate.billAmount = false
+        if (bill.billingDate === 'undefined' || bill.billingDate === null || bill.billingDate === '') {
+          this.validate.billingDate = false
         } else {
-          this.validate.billAmount = true
+          this.validate.billingDate = true
         }
-        if (bill.paidAmount === '' || bill.paidAmount === null) {
-          bill.paidAmount = 0
-        } else {
-          this.validate.paidAmount = true
-        }
-        if (bill.mode === '' || bill.mode === null || bill.mode === '') {
-          this.validate.mode = false
-        } else {
-          this.validate.mode = true
-        }
-        if (bill.paymentDate === 'undefined' || bill.paymentDate === null || bill.paymentDate === '') {
-          this.validate.paymentDate = false
-        } else {
-          this.validate.paymentDate = true
-        }
-        if (bill.materials === undefined || bill.materials === null || bill.materials === '') {
-          this.validate.material = false
-        } else {
-          this.validate.material = true
-        }
-        if (bill.comment === '' || bill.comment === null || bill.comment === 0) {
-          this.validate.comment = false
-        } else {
-          this.validate.comment = true
-        }
-        if (this.validate.billAmount && this.validate.paidAmount && this.validate.mode && this.validate.paymentDate && this.validate.material && this.validate.comment) {
-          if (bill.paidAmount > bill.billAmount) {
-            this.validate.errorMessage = 'Payment amount can not be greater then bill amount.'
+        this.$forceUpdate()
+        if (bill.rateAvailable === 'rated') {
+          if (bill.rate === '' || bill.rate === null || bill.rate === 0) {
+            this.validate.rate = false
+          } else {
+            this.validate.rate = true
+          }
+          if (bill.quantity === '' || bill.quantity === null || bill.quantity === 0) {
+            this.validate.quantity = false
+          } else {
+            this.validate.quantity = true
+          }
+          if (!this.validate.rate || !this.validate.quantity) {
             return false
           } else {
-            return true
+            return this.validateBill(bill)
           }
-        } else {
-          return false
         }
+        return this.validateBill(bill)
       } else if (bill.reason === this.reasons[1].name) {
         if (bill.paidAmount === '' || bill.paidAmount === null || bill.paidAmount === 0) {
           this.validate.paidAmount = false
@@ -585,12 +629,63 @@ export default {
         }
       }
     },
+    validateBill: function (bill) {
+      if (bill.billAmount === '' || bill.billAmount === null || bill.billAmount === 0) {
+        this.validate.billAmount = false
+      } else {
+        this.validate.billAmount = true
+      }
+      if (bill.paidAmount === '' || bill.paidAmount === null) {
+        bill.paidAmount = 0
+      } else {
+        this.validate.paidAmount = true
+      }
+      if (bill.mode === '' || bill.mode === null || bill.mode === '') {
+        if (this.validate.zeroPayment) {
+          this.validate.mode = true
+        } else {
+          this.validate.mode = false
+        }
+      } else {
+        this.validate.mode = true
+      }
+      if (bill.paymentDate === 'undefined' || bill.paymentDate === null || bill.paymentDate === '') {
+        if (this.validate.zeroPayment) {
+          this.validate.paymentDate = true
+        } else {
+          this.validate.paymentDate = false
+        }
+      } else {
+        this.validate.paymentDate = true
+      }
+      if (bill.materials === undefined || bill.materials === null || bill.materials === '') {
+        this.validate.material = false
+      } else {
+        this.validate.material = true
+      }
+      if (bill.comment === '' || bill.comment === null || bill.comment === 0) {
+        this.validate.comment = false
+      } else {
+        this.validate.comment = true
+      }
+      if (this.validate.billAmount && this.validate.paidAmount && this.validate.mode && this.validate.paymentDate && this.validate.material && this.validate.comment) {
+        if (bill.paidAmount > bill.billAmount) {
+          this.validate.errorMessage = 'Payment amount can not be greater then bill amount.'
+          return false
+        } else {
+          return true
+        }
+      } else {
+        return false
+      }
+    },
     print: function () {
       this.$htmlToPaper('printable')
     }
   },
   mounted () {
     this.clientId = this.$session.get('clientId')
+    this.client = this.$session.get('clientName')
     this.getSummarizedProjectsForClient()
   }
 }

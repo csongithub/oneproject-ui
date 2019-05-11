@@ -59,6 +59,7 @@ export default {
         if (token.authenticated) {
           this.$session.start()
           this.$session.set('clientId', token.clientId)
+          this.$session.set('clientName', token.clientName)
           this.$emit('login', {'status': true, 'clientId': token.clientId, 'clientName': token.clientName, 'user': this.username})
         } else {
           this.success = true

@@ -51,13 +51,13 @@
     </b-modal>
     <b-modal v-if="selectedProject" id="editIndividualModal" ref="editIndividualModalRef" title="Update Individual" centered  size="sm">
       <b-row class="mb-1 ml-3 mr-1">
-        <b-co>Project: {{selectedProject.projectName}}</b-co><b-col></b-col>
+        <b-col>Project: {{selectedProject.projectName}}</b-col><b-col></b-col>
       </b-row>
       <b-row class="mb-3 ml-3 mr-1">
-        <b-co>Name: {{individualMaping.individualFullName}}</b-co><b-col></b-col>
+        <b-col>Name: {{individualMaping.individualFullName}}</b-col><b-col></b-col>
       </b-row>
       <b-form>
-        <b-ro>
+        <b-row>
           <b-col>
             <b-form-group id="role" label="Role in project:" label-for="position" title="Represents individual's role in project">
               <b-form-select class = "b-form-select" v-model="individualMaping.role" :options="positionTypes.map(a => a.name)" size="sm">
@@ -70,7 +70,7 @@
               <date-picker v-model="individualMaping.joiningDate" :lang="'en'" :format="'DD-MM-YYYY'"></date-picker>
             </b-form-group>
           </b-col>
-        </b-ro>
+        </b-row>
       </b-form>
       <div slot="modal-footer" class="w-100">
         <b-button type="submit" class="b-button float-right px-2 " variant="primary" v-on:click.prevent="updateIndividual()">{{activeAction}}</b-button>

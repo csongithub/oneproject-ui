@@ -72,8 +72,8 @@ export default {
             {
               title: 'Tools & Machines',
               icon: 'fa fa-truck',
-              name: 'ProjectTools',
-              path: '/projecttools'
+              name: 'ProjectMachines',
+              path: '/projectmachines'
             }
           ]
         },

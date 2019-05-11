@@ -10,7 +10,7 @@ import Enumerations from '../components/admin/Enumerations'
 import ProjectGeneral from '../components/project/ProjectGeneral'
 import ProjectIndividuals from '../components/project/ProjectIndividuals'
 import ProjectSuppliers from '../components/project/ProjectSuppliers.vue'
-import ProjectTools from '../components/project/ProjectTools'
+import ProjectMachines from '../components/project/ProjectMachines'
 
 import IndividualBasic from '../components/individual/IndividualBasic'
 import IndividualKYC from '../components/individual/IndividualKYC'
@@ -64,9 +64,9 @@ export default new Router({
       component: ProjectSuppliers
     },
     {
-      path: '/projecttools',
-      name: 'ProjectTools',
-      component: ProjectTools
+      path: '/projectmachines',
+      name: 'ProjectMachines',
+      component: ProjectMachines
     },
     {
       path: '/individualbasic',
