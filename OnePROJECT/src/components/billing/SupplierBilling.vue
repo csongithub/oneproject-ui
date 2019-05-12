@@ -409,7 +409,7 @@ export default {
         billId: null,
         supplierId: null,
         projectId: null,
-        reason: null,
+        reason: 'New Bill',
         billAmount: 0.0,
         paidAmount: 0.0,
         dueAmount: 0.0,
@@ -630,6 +630,11 @@ export default {
       }
     },
     validateBill: function (bill) {
+      if (bill.billingDate === 'undefined' || bill.billingDate === null || bill.billingDate === '') {
+        this.validate.billingDate = false
+      } else {
+        this.validate.billingDate = true
+      }
       if (bill.billAmount === '' || bill.billAmount === null || bill.billAmount === 0) {
         this.validate.billAmount = false
       } else {
@@ -668,7 +673,7 @@ export default {
       } else {
         this.validate.comment = true
       }
-      if (this.validate.billAmount && this.validate.paidAmount && this.validate.mode && this.validate.paymentDate && this.validate.material && this.validate.comment) {
+      if (this.validate.billingDate && this.validate.billAmount && this.validate.paidAmount && this.validate.mode && this.validate.paymentDate && this.validate.material && this.validate.comment) {
         if (bill.paidAmount > bill.billAmount) {
           this.validate.errorMessage = 'Payment amount can not be greater then bill amount.'
           return false
