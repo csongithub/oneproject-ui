@@ -52,21 +52,21 @@
             </b-row>
             <b-row>
               <b-col>
-                <label><b>Billing Amount:</b><i class="fa fa-inr"/>{{' '}}{{supplierBillingSummary.totalBillingAmount | numFormat('0.00')}}</label>
+                <label><b>Billing Amount:</b><i class="fa fa-inr"/>{{' '}}{{supplierBillingSummary.totalBillingAmount | numFormat('0.00')}}{{' (' + supplierBillingSummary.billingPercentage + '%)'}}</label>
               </b-col>
               <b-col>
                 <b-form-group>
-                  <label><b>Paid Amount:</b><i class="fa fa-inr"/>{{' '}}{{ supplierBillingSummary.totalPaymentAmount | numFormat('0.00')}}</label>
+                  <label><b>Paid Amount:</b><i class="fa fa-inr"/>{{' '}}{{ supplierBillingSummary.totalPaymentAmount | numFormat('0.00')}}{{' (' + supplierBillingSummary.paymentPercentage + '%)'}}</label>
                 </b-form-group>
               </b-col>
               <b-col>
                 <b-form-group>
-                  <label><b>Due Amount:</b><i class="fa fa-inr"/>{{' '}}{{supplierBillingSummary.totalDueAmount | numFormat('0.00')}}</label>
+                  <label><b>Due Amount:</b><i class="fa fa-inr"/>{{' '}}{{supplierBillingSummary.totalDueAmount | numFormat('0.00')}}{{' (' + supplierBillingSummary.duePercentage + '%)'}}</label>
                 </b-form-group>
               </b-col>
               <b-col>
                 <b-form-group>
-                  <label><b>Advance Amount:</b><i class="fa fa-inr"/>{{' '}}{{supplierBillingSummary.totalAdvanceAmount | numFormat('0.00')}}</label>
+                  <label><b>Advance Amount:</b><i class="fa fa-inr"/>{{' '}}{{supplierBillingSummary.totalAdvanceAmount | numFormat('0.00')}}{{' (' + supplierBillingSummary.advPercentage + '%)'}}</label>
                 </b-form-group>
               </b-col>
             </b-row>
