@@ -137,6 +137,12 @@ export default {
               icon: 'fa fa-inr',
               name: 'OtherBilling',
               path: '/otherbilling'
+            },
+            {
+              title: 'Supplier Billing Summary',
+              icon: 'fa fa-book',
+              name: 'SuppliersBillingSummary',
+              path: '/suppliersbillingsummary'
             }
           ]
         },
