@@ -1,5 +1,5 @@
 <template>
-  <div class="SupplierBillingSummary">
+  <div>
     <div class="mt-0 ml-5 mr-5">
       <b-form-group label-cols-sm="1" label="Select project: ">
         <b-input-group-append class="ml-4">
@@ -10,8 +10,8 @@
         </b-input-group-append>
       </b-form-group>
     </div>
-    <div class="mt-0 ml-5 mr-5">
-      <b-card class="float-left mr-2 mb-5" v-for="supplier in suppliersSummary" v-bind:key="supplier.supplierId" style="height: 30vh; width: 30%;">
+    <div style="overflow: hidden; width: 95%; margin:auto;">
+      <b-card class="float-left mr-2 mb-5" v-for="supplier in suppliersSummary" v-bind:key="supplier.supplierId" style="height: 30vh; width:30%">
         <h6 slot="header" class="mb-0">{{supplier.supplierName}} <i class="fa fa-circle float-right" :style="getColor(supplier)"/></h6>
         <table>
           <tr><td align="left"><h6>Billing Amount:</h6></td><td><i class="fa fa-inr"/>{{' '}}{{supplier.totalBillingAmount | numFormat('0.00')}}</td><td style="padding-left: 30px;">{{' ' + supplier.billingPercentage + '%'}}</td></tr>
