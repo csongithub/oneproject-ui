@@ -116,8 +116,21 @@ export default {
           ]
         },
         {
+          name: 'Tooling',
+          title: 'Tools & Machines',
+          icon: 'fa fa-truck',
+          subMenu: [
+            {
+              title: 'Capture Machine',
+              icon: 'fa fa-truck',
+              name: 'CaptureMachine',
+              path: '/tooling'
+            }
+          ]
+        },
+        {
           name: 'Billing',
-          title: 'Billing & payments',
+          title: 'Billing & Payments',
           icon: 'fa fa-credit-card',
           subMenu: [
             {
@@ -143,19 +156,12 @@ export default {
               icon: 'fa fa-book',
               name: 'SuppliersBillingSummary',
               path: '/suppliersbillingsummary'
-            }
-          ]
-        },
-        {
-          name: 'Tooling',
-          title: 'Tools & Machines',
-          icon: 'fa fa-truck',
-          subMenu: [
+            },
             {
-              title: 'Capture Machine',
+              title: 'Machines & Tools',
               icon: 'fa fa-truck',
-              name: 'CaptureMachine',
-              path: '/tooling'
+              name: 'MachineBilling',
+              path: '/MachineBilling'
             }
           ]
         }

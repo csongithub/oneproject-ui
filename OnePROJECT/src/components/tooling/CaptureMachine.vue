@@ -73,7 +73,7 @@ export default {
         {'name': 'Roller'},
         {'name': 'Water Tanker'},
         {'name': 'Tractor'},
-        {'name': 'Compactor'},
+        {'name': 'Soil Compactor'},
         {'name': 'Hiva'},
         {'name': 'Mixer Machine'},
         {'name': 'Mini Truck'},

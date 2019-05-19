@@ -74,12 +74,6 @@
               <i id="paymentHistory" style="cursor: pointer; color: blue;" v-on:click="showPaymentHistory = !showPaymentHistory" :class="!showPaymentHistory ? 'fa fa-plus' : 'fa fa-minus'">{{showHideHistorytext}}</i>
               <div :style="showPaymentHistory ? 'display : block; border: 1px solid lightgreen;' : 'display : none;'">
                 <b-table class="b-table" style="cursor: default" striped hover responsive :items="bills" :fields="billFields" :small="true" :fixed="true"></b-table>
-                <!-- <br>
-                <label><b>Total Salary Paid: </b>{{'INR '}}{{totalSalary | numFormat('0.00')}}</label><br>
-                <label><b>Total Dues Salary: </b>{{'INR '}}{{totalDuesSalary | numFormat('0.00')}}</label><br>
-                <label><b>Total Advance Paid: </b>{{'INR '}}{{totalAdvance | numFormat('0.00')}}</label><br>
-                <label><b>Total Dues Paid: </b>{{'INR '}}{{totalDuesPaid | numFormat('0.00')}}</label><br>
-                <label><b>Total Recovery Collected: </b>{{'INR '}}{{totalRecovery | numFormat('0.00')}}</label> -->
               </div>
             </div>
           </b-card>
@@ -95,7 +89,6 @@
               </b-form-select>
             </b-form-group>
           </b-col>
-
         </b-row>
         <div v-if="supplierBill.reason === reasons[0].name">
           <b-row>
