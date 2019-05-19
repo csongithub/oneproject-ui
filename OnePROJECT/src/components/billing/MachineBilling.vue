@@ -85,21 +85,21 @@
             </b-row>
             <b-row>
               <b-col>
-                <label><b>Billing Amount:</b><i class="fa fa-inr"/>{{' '}}{{machineBillingSummary.totalBillingAmount}}</label>
+                <label><b>Billing Amount:</b><i class="fa fa-inr"/>{{' '}}{{machineBillingSummary.totalBillingAmount}}{{' (' + machineBillingSummary.billingPercentage + '%)'}}</label>
               </b-col>
               <b-col>
                 <b-form-group>
-                  <label><b>Paid Amount:</b><i class="fa fa-inr"/>{{' '}}{{ machineBillingSummary.totalPaidAmount}}</label>
+                  <label><b>Paid Amount:</b><i class="fa fa-inr"/>{{' '}}{{ machineBillingSummary.totalPaidAmount}}{{' (' + machineBillingSummary.paymentPercentage + '%)'}}</label>
                 </b-form-group>
               </b-col>
               <b-col>
                 <b-form-group>
-                  <label><b>Due Amount:</b><i class="fa fa-inr"/>{{' '}}{{machineBillingSummary.totalDueAmount}}</label>
+                  <label><b>Due Amount:</b><i class="fa fa-inr"/>{{' '}}{{machineBillingSummary.totalDueAmount}}{{' (' + machineBillingSummary.duePercentage + '%)'}}</label>
                 </b-form-group>
               </b-col>
               <b-col>
                 <b-form-group>
-                  <label><b>Advance Amount:</b><i class="fa fa-inr"/>{{' '}}{{machineBillingSummary.totalAdvanceAmount}}</label>
+                  <label><b>Advance Amount:</b><i class="fa fa-inr"/>{{' '}}{{machineBillingSummary.totalAdvanceAmount}}{{' (' + machineBillingSummary.advPercentage + '%)'}}</label>
                 </b-form-group>
               </b-col>
             </b-row>

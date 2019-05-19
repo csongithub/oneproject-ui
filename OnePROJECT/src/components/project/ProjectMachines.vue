@@ -19,10 +19,10 @@
       <b-form>
         <b-row>
           <b-col>
-            <b-form-group id="selectmachine" label="Select a Machine:" label-for="selectmachine" title="Select a machine to be added to this project">
-              <b-form-select class="b-form-select" v-model="projectMachineLinkage.machine" size="sm">
+            <b-form-group id="selectmachine" label="Select a Machine:" label-for="selectedMachine" title="Select a machine to be added to this project">
+              <b-form-select class="b-form-select" v-model="selectedMachine" size="sm">
                 <option v-for="machine in allMachines" v-bind:key="machine.machineId" :value="machine">{{'Internal ID: ' + machine.machineId+ ',   Name: ' + machine.machineName + ',   Number: ' + machine.machineNumber + ',    Owner: ' + machine.ownerName}}</option>
-                <option slot="first" :value="null">Please Select an individual</option>
+                <option slot="first" :value="null">Please Select a Machine</option>
               </b-form-select>
             </b-form-group>
           </b-col>
@@ -110,6 +110,7 @@ export default {
         }
       },
       allMachines: [],
+      selectedMachine: null,
       projectMachineLinkage: this.getNewLinkage(),
       pricingUnits: [{'name': 'Hour'}, {'name': 'Month'}]
     }
@@ -154,7 +155,7 @@ export default {
     getClientMachines: function () {
       let self = this
       axios.get(this.machineAPI + 'getClientMachines' + '/' + this.clientId).then(response => {
-        if (self.allMachines.length === 0) {
+        if (self.projectMachines.length === 0) {
           self.allMachines = response.data
         } else {
           self.allMachines.splice(0, self.allMachines.length)
@@ -162,7 +163,7 @@ export default {
           for (var i = 0; i < response.data.length; i++) {
             found = false
             for (var j = 0; j < self.projectMachines.length; j++) {
-              if (response.data[i].machineId === self.projectIndividuals[j].machineId) {
+              if (response.data[i].machineId === self.projectMachines[j].machineId) {
                 found = true
                 break
               }
@@ -178,12 +179,17 @@ export default {
     },
     addMachineToProject: function () {
       let self = this
-      axios.post(this.projectAPI + 'addMachineToProject' + '/' + this.selectedProject.projectId, this.projectMachineLinkage).then(response => {
-        self.projectMachines = response.data
-        this.hideShowAddMachineModal()
-      }).catch(error => {
-        self.$awn.alert(error.response.data.message)
-      })
+      if (this.selectedMachine != null) {
+        this.projectMachineLinkage.machine = this.selectedMachine
+        axios.post(this.projectAPI + 'addMachineToProject' + '/' + this.selectedProject.projectId, this.projectMachineLinkage).then(response => {
+          self.projectMachines = response.data
+          self.selectedMachine = null
+          self.projectMachineLinkage = self.getNewLinkage()
+          this.hideShowAddMachineModal()
+        }).catch(error => {
+          self.$awn.alert(error.response.data.message)
+        })
+      }
     },
     cancel: function () {
       this.hideShowAddMachineModal()

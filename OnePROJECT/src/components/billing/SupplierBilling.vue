@@ -73,7 +73,11 @@
             <div>
               <i id="paymentHistory" style="cursor: pointer; color: blue;" v-on:click="showPaymentHistory = !showPaymentHistory" :class="!showPaymentHistory ? 'fa fa-plus' : 'fa fa-minus'">{{showHideHistorytext}}</i>
               <div :style="showPaymentHistory ? 'display : block; border: 1px solid lightgreen;' : 'display : none;'">
+                <label style="color: blue; font-size: 30; font-weight: bold;">Billing History</label>
                 <b-table class="b-table" style="cursor: default" striped hover responsive :items="bills" :fields="billFields" :small="true" :fixed="true"></b-table>
+                <hr>
+                <label style="color: blue; font-size: 30; font-weight: bold;">Payment History</label>
+                <b-table class="b-table" style="cursor: default" striped hover responsive :items="payments" :fields="paymentFields" :small="true" :fixed="true"></b-table>
               </div>
             </div>
           </b-card>
@@ -300,11 +304,9 @@ export default {
       supplierBillingSummary: {'totalBillingAmount': 0.0, 'totalPaymentAmount': 0.0, 'totalDueAmount': 0.0, 'totalAdvanceAmount': 0.0},
       showPaymentHistory: false,
       showHideHistorytext: 'Payment History',
+      bills: [],
+      payments: [],
       billFields: {
-        reason: {
-          label: 'Reason',
-          sortable: true
-        },
         billingDate: {
           label: 'Billing Date',
           sortable: true
@@ -346,7 +348,32 @@ export default {
           sortable: false
         }
       },
-      bills: [],
+      paymentFields: {
+        reason: {
+          label: 'Reason',
+          sortable: true
+        },
+        paymentDate: {
+          label: 'Payment Date',
+          sortable: true
+        },
+        paidAmount: {
+          label: 'Paid Amount',
+          sortable: true
+        },
+        mode: {
+          label: 'Payment Mode',
+          sortable: true
+        },
+        materials: {
+          label: 'Materials',
+          sortable: false
+        },
+        comment: {
+          label: 'Remark',
+          sortable: false
+        }
+      },
       validate: this.initiateValidateData(),
       disabled: false
     }
@@ -364,10 +391,10 @@ export default {
       }
     },
     'supplierBill.rate': function (value) {
-      this.supplierBill.billAmount = this.supplierBill.rate * this.supplierBill.quantity
+      this.supplierBill.billAmount = (this.supplierBill.rate * this.supplierBill.quantity).toFixed(2)
     },
     'supplierBill.quantity': function (value) {
-      this.supplierBill.billAmount = this.supplierBill.rate * this.supplierBill.quantity
+      this.supplierBill.billAmount = (this.supplierBill.rate * this.supplierBill.quantity).toFixed(2)
     },
     'supplierBill.paidAmount': function (value) {
       if (this.supplierBill.reason === this.reasons[0].name) {
@@ -494,8 +521,18 @@ export default {
       let self = this
       if (this.selectedProject !== null && this.selectedSupplier !== null) {
         axios.get(this.billingAPI + 'getBillsForProjectAndSupplier' + '/' + this.selectedProject.projectId + '/' + this.selectedSupplier.id).then(response => {
-          let o = response.data
-          self.bills = o
+          let allBills = response.data
+          self.bills.splice(0, self.bills.length)
+          self.payments.splice(0, self.payments.length)
+          if (allBills.length > 0) {
+            for (let bill of allBills) {
+              if (bill.reason === self.reasons[0].name) {
+                self.bills.push(bill)
+              } else {
+                self.payments.push(bill)
+              }
+            }
+          }
         }).catch(error => {
           self.$awn.alert(error.response.data.message)
         })

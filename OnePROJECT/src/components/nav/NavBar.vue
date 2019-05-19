@@ -146,6 +146,12 @@ export default {
               path: '/supplierbilling'
             },
             {
+              title: 'Machines & Tools',
+              icon: 'fa fa-truck',
+              name: 'MachineBilling',
+              path: '/MachineBilling'
+            },
+            {
               title: 'Other',
               icon: 'fa fa-inr',
               name: 'OtherBilling',
@@ -156,12 +162,6 @@ export default {
               icon: 'fa fa-book',
               name: 'SuppliersBillingSummary',
               path: '/suppliersbillingsummary'
-            },
-            {
-              title: 'Machines & Tools',
-              icon: 'fa fa-truck',
-              name: 'MachineBilling',
-              path: '/MachineBilling'
             }
           ]
         }
