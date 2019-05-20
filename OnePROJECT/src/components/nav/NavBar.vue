@@ -158,10 +158,10 @@ export default {
               path: '/otherbilling'
             },
             {
-              title: 'Supplier Billing Summary',
+              title: 'Billing Summary',
               icon: 'fa fa-book',
-              name: 'SuppliersBillingSummary',
-              path: '/suppliersbillingsummary'
+              name: 'BillingSummary',
+              path: '/billingsummary'
             }
           ]
         }

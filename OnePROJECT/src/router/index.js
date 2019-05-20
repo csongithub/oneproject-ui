@@ -22,7 +22,7 @@ import IndividualBilling from '../components/billing/IndividualBilling'
 import SupplierBilling from '../components/billing/SupplierBilling'
 import OtherBilling from '../components/billing/OtherBilling'
 import MachineBilling from '../components/billing/MachineBilling'
-import SuppliersBillingSummary from '../components/billing/SuppliersBillingSummary'
+import BillingSummary from '../components/billing/BillingSummary'
 
 import CaptureMachine from '../components/tooling/CaptureMachine'
 
@@ -106,9 +106,9 @@ export default new Router({
       component: MachineBilling
     },
     {
-      path: '/suppliersbillingsummary',
-      name: 'SuppliersBillingSummary',
-      component: SuppliersBillingSummary
+      path: '/billingsummary',
+      name: 'BillingSummary',
+      component: BillingSummary
     },
     {
       path: '/otherbilling',
