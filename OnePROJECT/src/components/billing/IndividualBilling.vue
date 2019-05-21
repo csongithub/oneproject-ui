@@ -324,11 +324,11 @@ export default {
       ],
       modes: [{'name': 'Cash'}, {'name': 'Cheque'}, {'name': 'Account Transfer'}],
       months: [
-        {'name': 'Jan'}, {'name': 'Feb'}, {'name': 'March'}, {'name': 'Apr'}, {'name': 'May'}, {'name': 'June'},
-        {'name': 'July'}, {'name': 'Aug'}, {'name': 'Sep'}, {'name': 'oct'}, {'name': 'Nov'}, {'name': 'Dec'}
+        {'name': 'Jan', 'value': 1}, {'name': 'Feb', 'value': 2}, {'name': 'March', 'value': 3}, {'name': 'Apr', 'value': 4}, {'name': 'May', 'value': 5}, {'name': 'June', 'value': 6},
+        {'name': 'July', 'value': 7}, {'name': 'Aug', 'value': 8}, {'name': 'Sep', 'value': 9}, {'name': 'oct', 'value': 10}, {'name': 'Nov', 'value': 11}, {'name': 'Dec', 'value': 12}
       ],
       status: [{'name': 'Paid'}, {'name': 'Pending'}],
-      years: [{'year': 2018}, {'year': 2019}, {'year': 2020}],
+      years: [{'year': 2017}, {'year': 2018}, {'year': 2019}, {'year': 2020}, {'year': 2021}, {'year': 2022}, {'year': 2023}, {'year': 2024}, {'year': 2025}],
       errorMessage: '',
       payments: [],
       historyFields: {
