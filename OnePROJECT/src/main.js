@@ -20,8 +20,9 @@ import Multiselect from 'vue-multiselect'
 
 import IdleVue from 'idle-vue'
 import VueSession from 'vue-session'
+import ToggleButton from 'vue-js-toggle-button'
 Vue.use(VueSession)
-
+Vue.use(ToggleButton)
 Vue.component('multiselect', Multiselect)
 
 const eventsHub = new Vue()

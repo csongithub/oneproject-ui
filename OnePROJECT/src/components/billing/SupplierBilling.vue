@@ -29,6 +29,7 @@
     </div>
     <div v-if="selectedProject && selectedSupplier" id="billing" style="display: none;" class="mt-0 ml-5 mr-5">
       <i class="fa fa-long-arrow-left fa-2x" style="cursor: pointer; color:gray; padding:5px;" v-on:click="goToProject"></i>
+      <toggle-button class="ml-2" @change="onChangeEventHandler" :value="enableEditMode" :sync="true" :color="colors" :labels="true"/>
       <i class="fa fa-print float-right fa-1x" style="cursor: pointer; color:gray; padding:5px;" v-on:click="print">{{' ' + 'Print'}}</i>
       <div id="printable">
         <b-form>
@@ -74,17 +75,17 @@
               <i id="paymentHistory" style="cursor: pointer; color: blue;" v-on:click="showPaymentHistory = !showPaymentHistory" :class="!showPaymentHistory ? 'fa fa-plus' : 'fa fa-minus'">{{showHideHistorytext}}</i>
               <div :style="showPaymentHistory ? 'display : block; border: 1px solid lightgreen;' : 'display : none;'">
                 <label style="color: blue; font-size: 30; font-weight: bold;">Billing History</label>
-                <b-table class="b-table" style="cursor: default" striped hover responsive :items="bills" :fields="billFields" :small="true" :fixed="true"></b-table>
+                <b-table @row-dblclicked="updateBill" class="b-table" style="cursor: default" striped hover responsive :items="bills" :fields="billFields" :small="true" :fixed="true"></b-table>
                 <hr>
                 <label style="color: blue; font-size: 30; font-weight: bold;">Payment History</label>
-                <b-table class="b-table" style="cursor: default" striped hover responsive :items="payments" :fields="paymentFields" :small="true" :fixed="true"></b-table>
+                <b-table @row-dblclicked="updatePayment" class="b-table" style="cursor: default" striped hover responsive :items="payments" :fields="paymentFields" :small="true" :fixed="true"></b-table>
               </div>
             </div>
           </b-card>
         </b-form>
       </div>
       <br>
-      <b-form title="Do supplier payment here" style="background-color: lightgreen; padding: 10px">
+      <b-form title="Do supplier payment here" style="background-color: lightgreen; padding: 10px" id = "paymentForm">
         <b-row>
           <b-col cols="auto">
             <b-form-group id="reason" label="Payment Reason:" label-for="reason" title="Represents payment reason.">
@@ -270,6 +271,154 @@
         </div>
       </b-form>
     </div>
+    <b-modal class="b-modal" id="editBill" ref="editBillModalRef" title="Edit Bill" centered size="lg" @hidden="cancelEdit">
+      <b-form title="Do supplier payment here" style="background-color: lightgreen; padding: 10px">
+        <div>
+          <b-row>
+            <b-col>
+              <b-form-group :state="validate.billingDate" :invalid-feedback="'Select billing date.'" class = "date-picker"  id="paymentDate" label="Billing Date:" label-for="billingDate" title="Represents date of billing.">
+                <date-picker class = "date-picker" v-model="supplierBill.billingDate" :lang="'en'" :format="'DD-MM-YYYY'"></date-picker>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group class="b-form-group" id="rate" label="Rate is known." label-for="rate" title="Represents weather rate is known or not.">
+                <b-form-checkbox id="checkbox-2" v-model="rateAvailable" name="checkbox-2" value="rated" unchecked-value="not_rated">
+                  Billing by rate.
+                </b-form-checkbox>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group :state="validate.rate" :invalid-feedback="'Enter material rate.'" class="b-form-group" id="rate" label="Rate (Per Unit)" label-for="rate" title="Represents rate of material.">
+                <b-form-input :disabled="disabled" :state="validate.rate" size="sm" class="b-form-input mt-2" id="rate" type="text" v-model="supplierBill.rate" required placeholder="i.e 267.57"/>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group :state="validate.quantity" :invalid-feedback="'Enter material quantity.'" class="b-form-group" id="quantity" label="Quantity:" label-for="quantity" title="Represents quantity of material purchaged.">
+                <b-form-input :disabled="disabled" :state="validate.quantity" size="sm" class="b-form-input mt-2" id="billAmount" type="text" v-model="supplierBill.quantity" required placeholder="i.e 15KG or 50 Liters or 100 Bags "/>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <b-form-group  :state="validate.billAmount" :invalid-feedback="'Enter billing amount.'" class="b-form-group" id="billAmount" label="Bill Amount" label-for="billAmount" title="Represents total amount of bill.">
+                <b-form-input :disabled="!disabled" :state="validate.billAmount" size="sm" class="b-form-input mt-2" id="billAmount" type="text" v-model="supplierBill.billAmount" required placeholder="Enter Bill Amount"/>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group  :state="validate.paidAmount" :invalid-feedback="'Enter payment amount.'" class="b-form-group" id="paidAmount" label="Payment Amount" label-for="paidAmount" title="Represents actual amount to be paid.">
+                <b-form-input :state="validate.paidAmount"  size="sm" class="b-form-input mt-2" id="paidAmount" type="text" v-model="supplierBill.paidAmount" required placeholder="Enter Payment Amount"/>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group :state="validate.paymentDate" :invalid-feedback="'Select payment date.'" class = "date-picker"  id="paymentDate" label="Payment Date:" label-for="paymentDate" title="Represents date of payment.">
+                <date-picker :disabled="validate.zeroPayment" class = "date-picker" v-model="supplierBill.paymentDate" :lang="'en'" :format="'DD-MM-YYYY'"></date-picker>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group :state="validate.mode" :invalid-feedback="'Select payment mode.'" id="mode" label="Payment Mode:" label-for="mode" title="Represents mode of payment.">
+                <b-form-select :disabled="validate.zeroPayment" :state="validate.mode" class = "b-form-select" v-model="supplierBill.mode" :options="modes.map(a=>a.name)" size="sm">
+                  <option slot="first" :value="null">Choose</option>
+                </b-form-select>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <b-form-group :state="validate.material" :invalid-feedback="'Select Material(s).'" id="material" label="Slecte Material(s):" label-for="material" title="Represents purchached material.">
+                <multiselect v-model="supplierBill.materialsArray" :options="matterialArray" :multiple="true" placeholder="Select material(s)">
+                </multiselect>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group class="b-form-group" id="dueAmount" label="Due Amount(in INR):" label-for="dueAmount" title="Represents due bill amount.">
+               <label><i class="fa fa-inr"/>{{' '}}{{supplierBill.dueAmount |numFormat('0.00')}}</label>
+              </b-form-group>
+            </b-col>
+            <b-col></b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <b-form-group :state="validate.comment" :invalid-feedback="'Write some comment.'"  class="b-form-group" id="remark" label="Remark:" label-for="remark" title="Represents remark for payment">
+                <b-form-textarea :state="validate.comment" id="textarea" v-model="supplierBill.comment" placeholder="Your comments here..." rows="2" max-rows="3"></b-form-textarea>
+              </b-form-group>
+            </b-col>
+            <b-col></b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <label class="float-left" v-if="validate.errorMessage" style="color: red;">{{validate.errorMessage}}</label>
+            </b-col>
+          </b-row>
+        </div>
+      </b-form>
+        <div slot="modal-footer" class="w-100">
+          <b-button type="submit" class="b-button float-right px-2 " variant="success" v-on:click="makePayment()">{{'Update'}}</b-button>
+          <b-button type="submit" class="b-button float-right px-2 mr-2" variant="danger" v-on:click="deleteBill()">{{'Delete'}}</b-button>
+          <b-button type="reset" class="b-button float-right px-2 mr-2" v-on:click="cancelEdit()">Cancel</b-button>
+        </div>
+    </b-modal>
+    <b-modal class="b-modal" id="editPayment" ref="editPaymentModalRef" title="Edit Payment" centered size="lg" @hidden="cancelEdit">
+      <b-form title="Edit/Update Payment" style="background-color: lightgreen; padding: 10px">
+        <div>
+          <b-row>
+            <b-col>
+              <b-form-group :state="validate.paidAmount" :invalid-feedback="'Enter Payment Amount'" class="b-form-group" id="paidAmount" label="Payment Amount(In INR):" label-for="paidAmount" title="Represents actual amount to be paid.">
+                <b-form-input :state="validate.paidAmount" size="sm" class="b-form-input mt-2" id="paidAmount" type="text" v-model="supplierBill.paidAmount" required placeholder="Enter Payment Amount"/>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group :state="validate.mode" :invalid-feedback="'Please select payment mode.'" id="mode" label="Payment Mode:" label-for="mode" title="Represents mode of payment.">
+                <b-form-select :state="validate.mode" class = "b-form-select" v-model="supplierBill.mode" :options="modes.map(a=>a.name)" size="sm">
+                  <option slot="first" :value="null">Choose</option>
+                </b-form-select>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group :state="validate.paymentDate" :invalid-feedback="'Please select payment date.'" class = "date-picker"  id="paymentDate" label="Payment Date:" label-for="paymentDate" title="Represents date of payment.">
+                <date-picker class = "date-picker" v-model="supplierBill.paymentDate" :lang="'en'" :format="'DD-MM-YYYY'"></date-picker>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <!-- <b-row v-if="supplierBill.reason === reasons[2].name">
+             <b-col>
+              <b-form-group :state="validate.material" :invalid-feedback="'Select Material(s).'" id="material" label="Slecte Material(s):" label-for="material" title="Represents purchached material.">
+                <multiselect v-model="supplierBill.materialsArray" :options="matterialArray" :multiple="true" placeholder="Select material(s)">
+                </multiselect>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group class="b-form-group" id="quantity" label="Enter Quantity of Material(s):" label-for="quantity" title="Represents quantity of material purchaged.">
+                <b-form-input :state="validate.quantity" size="sm" class="b-form-input mt-2" id="billAmount" type="text" v-model="supplierBill.quantity" required placeholder="i.e 15KG or 50 Liters or 100 Bags "/>
+              </b-form-group>
+            </b-col>
+            <b-col></b-col>
+          </b-row> -->
+          <b-row>
+            <b-col>
+              <b-form-group :state="validate.comment" invalid-feedback="Write some comment." class="b-form-group" id="remark" label="Comment:" label-for="remark" title="Represents remark for payment">
+                <b-form-textarea :state="validate.comment" id="textarea" v-model="supplierBill.comment" placeholder="Your comments here..." rows="2" max-rows="3"></b-form-textarea>
+              </b-form-group>
+            </b-col>
+            <b-col>
+              <b-form-group class="b-form-group" id="validateAmount" label="Validate Amount" label-for="validateAmount">
+                <b-form-checkbox id="checkbox-3" v-model="supplierBill.validateAmount" name="checkbox-3" value="validate" unchecked-value="not_required">
+                </b-form-checkbox>
+              </b-form-group>
+            </b-col>
+          </b-row>
+          <b-row>
+            <b-col>
+              <label class="float-left" v-if="validate.errorMessage" style="color: red;">{{validate.errorMessage}}</label>
+            </b-col>
+          </b-row>
+        </div>
+      </b-form>
+        <div slot="modal-footer" class="w-100">
+          <b-button type="submit" class="b-button float-right px-2 " variant="success" v-on:click="makePayment()">{{'Update'}}</b-button>
+          <b-button type="submit" class="b-button float-right px-2 mr-2" variant="danger" v-on:click="deleteBill()">{{'Delete'}}</b-button>
+          <b-button type="reset" class="b-button float-right px-2 mr-2" v-on:click="cancelEdit()">Cancel</b-button>
+        </div>
+    </b-modal>
   </div>
 </template>
 
@@ -300,6 +449,7 @@ export default {
       reasons: [{'name': 'New Bill'}, {'name': 'Due Payment'}, {'name': 'Advance Payment'}],
       modes: [{'name': 'Cash'}, {'name': 'Card'}, {'name': 'Cheque'}, {'name': 'Account Transfer'}],
       supplierBill: this.getNewBill(),
+      payment: {},
       matterialArray: [],
       supplierBillingSummary: {'totalBillingAmount': 0.0, 'totalPaymentAmount': 0.0, 'totalDueAmount': 0.0, 'totalAdvanceAmount': 0.0},
       showPaymentHistory: false,
@@ -309,10 +459,6 @@ export default {
       billFields: {
         billingDate: {
           label: 'Billing Date',
-          sortable: true
-        },
-        paymentDate: {
-          label: 'Payment Date',
           sortable: true
         },
         billAmount: {
@@ -375,11 +521,25 @@ export default {
         }
       },
       validate: this.initiateValidateData(),
-      disabled: false
+      disabled: false,
+      rateAvailable: null,
+      enableEditMode: false,
+      colors: {checked: 'lightgreen', unchecked: 'gray', disabled: '#CCCCCC'}
     }
   },
   watch: {
     'supplierBill.rateAvailable': function (value) {
+      if (value === 'not_rated') {
+        this.disabled = true
+        this.supplierBill.rate = 0.0
+        this.supplierBill.quantity = 0.0
+        this.validate.rate = true
+        this.validate.quantity = true
+      } else if (value === 'rated') {
+        this.disabled = false
+      }
+    },
+    'rateAvailable': function (value) {
       if (value === 'not_rated') {
         this.disabled = true
         this.supplierBill.rate = 0.0
@@ -417,13 +577,20 @@ export default {
       }
     },
     'supplierBill.reason': function (reason) {
-      this.validate.zeroPayment = true
-      this.validate = this.initiateValidateData()
-      this.supplierBill = this.getNewBill()
-      this.supplierBill.reason = reason
+      if (this.supplierBill.editMode === undefined) {
+        this.validate.zeroPayment = true
+        this.validate = this.initiateValidateData()
+        this.supplierBill = this.getNewBill()
+        this.supplierBill.reason = reason
+      } else {
+        // do nothing in edit mode
+      }
     }
   },
   methods: {
+    onChangeEventHandler: function (obj) {
+      this.enableEditMode = !this.enableEditMode
+    },
     getNewBill: function () {
       return {
         billId: null,
@@ -441,7 +608,8 @@ export default {
         mode: null,
         quantity: null,
         rate: 0.0,
-        rateAvailable: 'rated'
+        rateAvailable: 'rated',
+        validateAmount: 'validate'
       }
     },
     initiateValidateData: function () {
@@ -485,6 +653,7 @@ export default {
         document.getElementById('billing').style.display = 'block'
         this.getSupplier()
         this.postPayment()
+        this.enableEditMode = false
       } else {
         this.errMsg = 'Please select project and supplier'
       }
@@ -541,16 +710,27 @@ export default {
     makePayment: function () {
       let self = this
       let materials = ''
+      if (this.supplierBill.materialsArray === undefined) {
+        this.validate.material = false
+        return
+      } else {
+        this.validate.material = true
+      }
       for (let m of this.supplierBill.materialsArray) {
         materials = materials + ', ' + m
       }
-      Vue.set(this.supplierBill, 'materials', materials.slice(1))
+      if (this.supplierBill.materials === undefined || this.supplierBill.materials === '' || this.supplierBill.materials === null) {
+        Vue.set(this.supplierBill, 'materials', materials.slice(1))
+      }
       Vue.set(this.supplierBill, 'supplierId', this.selectedSupplier.id)
       Vue.set(this.supplierBill, 'projectId', this.selectedProject.projectId)
       if (this.validatePayment(this.supplierBill)) {
         axios.post(this.billingAPI + 'addBill', this.supplierBill).then(response => {
           this.postPayment()
           self.$awn.success('Payment Done')
+          this.$refs.editBillModalRef.hide()
+          this.$refs.editPaymentModalRef.hide()
+          document.getElementById('paymentForm').style.display = 'block'
         }).catch(error => {
           self.$awn.alert(error.response.data.message)
         })
@@ -561,6 +741,55 @@ export default {
       this.getBillsForProjectAndSupplier()
       this.getSupplierBillingSummaryForProject()
       this.validate = this.initiateValidateData()
+    },
+    updateBill: function (bill, index) {
+      if (this.enableEditMode) {
+        this.$refs.editBillModalRef.show()
+        this.supplierBill = bill
+        this.supplierBill.editMode = true
+        this.supplierBill.materials = null
+        if (this.supplierBill.rate !== null && this.supplierBill.rate !== undefined) {
+          this.rateAvailable = 'rated'
+        } else {
+          this.rateAvailable = 'not_rated'
+        }
+        document.getElementById('paymentForm').style.display = 'none'
+      }
+    },
+    updatePayment: function (payment, index) {
+      if (this.enableEditMode) {
+        this.$refs.editPaymentModalRef.show()
+        payment.editMode = true
+        payment.validateAmount = 'validate'
+        payment.materialsArray = []
+        this.supplierBill = payment
+        this.$forceUpdate()
+        console.log(this.supplierBill)
+        document.getElementById('paymentForm').style.display = 'none'
+      }
+    },
+    deleteBill: function () {
+      let handleConfirm = function () {
+        let self = this
+        axios.delete(this.billingAPI + 'deleteBill' + '/' + this.supplierBill.billId).then(response => {
+          self.postPayment()
+          self.$awn.success('Bill/Payment Deleted')
+          self.$refs.editBillModalRef.hide()
+          self.$refs.editPaymentModalRef.hide()
+          document.getElementById('paymentForm').style.display = 'block'
+        }).catch(error => {
+          self.$awn.alert(error.response.data.message)
+        })
+      }.bind(this)
+      let handleCancel = function () {
+      }
+      this.$awn.confirm('You are tyrying to delete a bill/payment,' + ' Are you sure?', handleConfirm, handleCancel)
+    },
+    cancelEdit: function () {
+      this.$refs.editBillModalRef.hide()
+      this.$refs.editPaymentModalRef.hide()
+      document.getElementById('paymentForm').style.display = 'block'
+      this.postPayment()
     },
     validatePayment: function (bill) {
       if (bill.reason === this.reasons[0].name) {
@@ -614,8 +843,12 @@ export default {
             this.validate.errorMessage = 'No Due amount is there for selected supplier and project.'
             return false
           } else if (bill.paidAmount > this.supplierBillingSummary.totalDueAmount) {
-            this.validate.errorMessage = 'Payment amount can not be greater then due amount.'
-            return false
+            if (bill.validateAmount === 'validate') {
+              this.validate.errorMessage = 'Payment amount can not be greater then due amount.'
+              return false
+            } else {
+              return true
+            }
           } else {
             return true
           }
@@ -648,8 +881,12 @@ export default {
             return true
           } else if (this.supplierBillingSummary.totalDueAmount >= 0) {
             if (bill.paidAmount <= this.supplierBillingSummary.totalDueAmount) {
-              this.validate.errorMessage = 'Advance amount can not be less or equal than due amount'
-              return false
+              if (bill.validateAmount === 'validate') {
+                this.validate.errorMessage = 'Advance amount can not be less or equal than due amount'
+                return false
+              } else {
+                return true
+              }
             } else {
               return true
             }
