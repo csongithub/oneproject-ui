@@ -65,6 +65,8 @@ export default {
           this.success = true
           this.errorMessage = 'Invalid Username or Password'
         }
+      }).catch(error => {
+        console.log(error)
       })
     }
   },
