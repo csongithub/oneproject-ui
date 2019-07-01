@@ -1,4 +1,4 @@
 export const config = {
   APP_NAME: 'OnePROJECT',
-  SERVER_URL: 'http://localhost:8001/'
+  SERVER_URL: 'https://localhost:8001/'
 }
