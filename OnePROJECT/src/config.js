@@ -3,7 +3,7 @@ export const config = {
   /**
    * Enable below line for HTTP
    */
-  SERVER_URL: 'http://13.235.76.229:8001/'
+  SERVER_URL: 'http://localhost:8001/'
   /*
    * Enable below lines for HTTPS
    */
