@@ -136,15 +136,4 @@ export default {
 .b-table {
   font-size: 80%;
 }
-.button {
-  color: black;
-  cursor: pointer;
-  background-color: lightgreen;
-  padding-left: 3px;
-  padding-right: 3px;
-  padding-bottom: 2px;
-  border-radius: 4px;
-  color: white;
-  font-size: 15px;
-}
 </style>
