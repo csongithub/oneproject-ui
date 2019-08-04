@@ -21,6 +21,7 @@
       <b-navbar-brand href="#">
         <span id="app" class="ml-1">OnePROJECT</span><span style="color: white;">{{' '+clientName}}</span>
       </b-navbar-brand>
+      <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
