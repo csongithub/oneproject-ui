@@ -95,31 +95,35 @@
                 <span><i class="fa fa-inr"/>{{' '}}{{editableBill.billAmount | numFormat('0.00')}}</span>
               </b-form-group>
             </b-col>
+            <b-col></b-col>
+            <b-col class="float-right">
+              <b-form-group class = "additem" label="" label-for="additem" title="To add a new item click Add">
+                <b-button class="b-button btn-sm float-left"  size="sm" variant="success" v-on:click="addItemToBill(editableBill.items)">Add Item <i :class="'fa fa-plus'"/></b-button>
+              </b-form-group>
+            </b-col>
           </b-row>
           <form style="border:1px;">
-            <b-button class="b-button btn-sm float-right"  size="sm" variant="success" v-on:click="addItemToBill(editableBill.items)">Add Item <i :class="'fa fa-plus'"/></b-button>
-            <table class="fixed_header">
-              <thead>
-                <tr>
-                  <td>S. No.</td>
-                  <td><span style="color:red;">*</span>Item</td>
-                  <td>Quantity</td>
-                  <td><span style="color:red;">*</span>Price</td>
-                  <td><span style="color:red;">*</span>Remark</td>
-                  <td></td>
-                </tr>
-              </thead>
-              <tbody>
-                <tr v-for="(item, index) of editableBill.items" :key="item.itemId">
-                  <td>{{index+1}}</td>
-                  <td><input type="text" v-model="item.itemName"/></td>
-                  <td><input type="text" v-model="item.quantity"/></td>
-                  <td><input type="text" v-model="item.price" v-on:keyup="reCalculateBillAmount"/></td>
-                  <td><input type="text" v-model="item.remark"/></td>
-                  <td><i class="fa fa-times" aria-hidden="true" style="cursor: pointer; color: gray;" v-on:click="removeItem(editableBill.items, index)"></i></td>
-                </tr>
-              </tbody>
-            </table>
+            <!-- <b-row>
+              <b-col><b-button class="b-button btn-sm float-left"  size="sm" variant="success" v-on:click="addItemToBill(editableBill.items)">Add Item <i :class="'fa fa-plus'"/></b-button></b-col>
+            </b-row> -->
+            <br>
+            <b-container fluid>
+              <b-row>
+                <b-col cols="auto" class="text-left"></b-col>
+                <b-col sm="3" class="text-left ml-2"><span style="color:red;">*</span>Item</b-col>
+                <b-col sm="2" class="text-left ml-1">Quantity</b-col>
+                <b-col sm="2" class="text-left"><span style="color:red;">*</span>Price</b-col>
+                <b-col sm="3" class="text-left"><span style="color:red;">*</span>Remark</b-col>
+              </b-row>
+              <b-row v-for="(item, index) of editableBill.items" :key="item.itemId">
+                <b-col cols="auto" class="text-left">{{index+1}}</b-col>
+                <b-col sm="3" class="text-left"><b-form-input size="sm" class="b-form-input" type="text" v-model="item.itemName"></b-form-input></b-col>
+                <b-col sm="2" class="text-left"><b-form-input size="sm" class="b-form-input" type="text" v-model="item.quantity"></b-form-input></b-col>
+                <b-col sm="2" class="text-left"><b-form-input size="sm" class="b-form-input" type="text" v-model="item.price" v-on:keyup="reCalculateBillAmount"></b-form-input></b-col>
+                <b-col sm="3" class="text-left"><b-form-input size="sm" class="b-form-input" type="text" v-model="item.remark"></b-form-input></b-col>
+                <b-col sm="1.5" class="text-left"><i class="fa fa-times" aria-hidden="true" style="cursor: pointer; color: gray;" v-on:click="removeItem(editableBill.items, index)"></i></b-col>
+              </b-row>
+            </b-container>
           </form>
         </b-card>
         <div slot="modal-footer" class="w-100">
