@@ -30,6 +30,12 @@
         </b-card>
       </div>
       <div v-if="entity === entities[2].name">
+        <div style="width: 60%;">
+        <table class="float-right mr-3">
+          <tr>
+            <td class="pr-2">{{'Total:  '}}</td><td><i class="fa fa-inr">{{' ' }}{{totalOtherBillingAmount | numFormat('0.00')}}</i></td>
+          </tr>
+        </table>
         <table class="mb-2">
           <tr>
             <td>
@@ -51,7 +57,8 @@
             </td>
           </tr>
         </table>
-        <div style="overflow: scroll; width: 60%; max-height: 500px; min-height: 450px; margin:auto; background-color: white; margin-right: 5px;" class="float-left">
+        </div>
+        <div style="overflow: scroll; width: 60%; max-height: 450px; min-height: 450px; margin:auto; background-color: white; margin-right: 5px;" class="float-left">
           <b-card id="item" class="float-left mr-2 mb-5 mt-2 ml-2" v-for="bill in otherBills" v-bind:key="bill.billId" style="height: 22vh; width:18%">
             <h6 slot="header" class="mb-0 float-left">{{bill.billingDate}} <i id="eye" class="ml-1 fa fa-eye float-right" style="cursor: pointer;"   v-on:click="showDetails(bill)"/></h6>
             <table id="table">
@@ -191,7 +198,8 @@ export default {
         forMonth: true,
         forYear: true
       },
-      editableBill: this.getNewObject()
+      editableBill: this.getNewObject(),
+      totalOtherBillingAmount: null
     }
   },
   methods: {
@@ -244,6 +252,7 @@ export default {
       let self = this
       axios.get(this.otherBillAPI + 'getBillsForProjectId' + '/' + this.project.projectId).then(response => {
         self.otherBills = response.data
+        self.getProjectBillingSummary()
         console.log(self.otherBills)
       }).catch(error => {
         self.$awn.alert(error.response.data.message)
@@ -361,6 +370,14 @@ export default {
       let item = {itemName: null, quantity: null, price: null, remark: null}
       // items.unshift(item)
       items.push(item)
+    },
+    getProjectBillingSummary: function () {
+      let self = this
+      axios.get(this.otherBillAPI + 'getProjectBillingSummary' + '/' + this.project.projectId).then(response => {
+        self.totalOtherBillingAmount = response.data.totalBillingAmount
+      }).catch(error => {
+        self.$awn.alert(error.response.data.message)
+      })
     }
   },
   mounted () {
